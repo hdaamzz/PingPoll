@@ -1,0 +1,21 @@
+services:
+  server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pingpoll-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend/node_modules:/app/node_modules  
+    networks:
+      - pingpoll-network
+
+
+
+networks:
+  ringring-network:
+    driver: bridge
