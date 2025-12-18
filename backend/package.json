@@ -1,0 +1,11 @@
+{
+  "name": "ping-poll-backend",
+  "version": "1.0.0",
+  "description": "An real-time based polling and chat application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
