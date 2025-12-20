@@ -1,0 +1,332 @@
+<div class="min-h-screen bg-linear-to-br from-[#FCF8F8] via-[#FBEFEF] to-[#F9DFDF] relative overflow-hidden">
+
+    <!-- Content -->
+    <main class="relative z-10 px-6 py-8 lg:px-12 lg:py-10">
+        <div class="max-w-7xl mx-auto space-y-10">
+            
+            <!-- Redesigned Header -->
+            <div class="relative overflow-hidden">
+                <div class="  p-8 lg:p-10">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                        <!-- Left: Title & Description -->
+                        <div class="flex-1 space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-linear-to-br from-[#F5AFAF] to-[#F9DFDF] rounded-2xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-3xl lg:text-4xl font-bold text-black">
+                                    Discover Live Polls
+                                </h2>
+                            </div>
+                            <p class="text-base text-gray-700 max-w-2xl">
+                                Explore trending polls from the community and join real-time conversations. 
+                                Vote, discuss, and connect with others instantly.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="mt-6 pt-6 flex flex-wrap items-center gap-6 lg:gap-8">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#F5AFAF]" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            <span class="text-sm font-semibold text-gray-900">{{ getTotalPolls() }} Active Polls</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-[#F5AFAF]" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                            </svg>
+                            <span class="text-sm font-semibold text-gray-900">{{ getTotalVotes() }} Total Votes</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+                            </svg>
+                            <span class="text-sm font-semibold text-gray-900">Real-Time Discussion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redesigned Horizontal Poll Carousel -->
+            <section class="space-y-5">
+                <div class="flex items-center justify-between px-2">
+                    <div>
+                        <h3 class="text-xl font-bold text-black">Trending Polls</h3>
+                        <p class="text-sm text-gray-600 mt-1">Select a poll to join the conversation</p>
+                    </div>
+                    <div class="hidden sm:flex items-center gap-2 text-sm text-gray-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                        </svg>
+                        <span>Scroll to explore</span>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                <div class="flex pt-3 gap-6 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory no-scrollbar">
+                    @for (poll of polls(); track poll.id) {
+                    <button 
+                        type="button" 
+                        (click)="selectPoll(poll.id)"   
+                        class="flex-none w-80 md:w-96 bg-white/50 backdrop-blur-xl border-2 rounded-3xl  p-7 text-left snap-start group/card
+                            transition-all duration-500 ease-out"
+                        [class.border-black]="selectedPollId() === poll.id"
+                        [class.border-white-60]="selectedPollId() !== poll.id"
+                        [class.ring-4]="selectedPollId() === poll.id"
+                        [class.ring-black-10]="selectedPollId() === poll.id">
+                        
+                        <!-- Card Header -->
+                        <div class="flex items-start justify-between gap-3 mb-4">
+                            <h4 class="text-lg font-bold text-black line-clamp-2 leading-tight flex-1 
+                                    transition-colors duration-300 group-hover/card:text-gray-900">
+                                {{ poll.title }}
+                            </h4>
+                            <div class="shrink-0">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/10 backdrop-blur-sm
+                                            transition-all duration-300 group-hover/card:bg-black/15 group-hover/card:scale-105">
+                                    <svg class="w-4 h-4 text-black transition-transform duration-300 group-hover/card:rotate-12" 
+                                        fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                                    </svg>
+                                    <span class="text-sm font-bold text-black">{{ poll.totalVotes }}</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Question -->
+                        <p class="text-sm text-gray-700 mb-5 line-clamp-2 leading-relaxed
+                                transition-colors duration-300 group-hover/card:text-gray-800">
+                            {{ poll.question }}
+                        </p>
+
+                        <!-- Options with Black Progress Bars -->
+                        <div class="space-y-3.5">
+                            @for (option of poll.options.slice(0, 3); track option.id; let i = $index) {
+                            <div class="group/option">
+                                <div class="flex items-center justify-between text-xs mb-1.5">
+                                    <span class="text-gray-900 font-semibold transition-all duration-300 
+                                                group-hover/card:text-black group-hover/card:translate-x-1">
+                                        {{ option.text }}
+                                    </span>
+                                    <span class="font-bold text-black transition-all duration-300
+                                                group-hover/card:scale-110">
+                                        {{ option.percentage }}%
+                                    </span>
+                                </div>
+                                <div class="h-2 bg-gray-200/80 rounded-full overflow-hidden backdrop-blur-sm
+                                            transition-all duration-300 group-hover/card:h-2.5 group-hover/card:bg-gray-300/80">
+                                    <div 
+                                        class="h-full bg-black rounded-full transition-all duration-700 ease-out
+                                            group-hover/card:bg-linear-to-r group-hover/card:from-black group-hover/card:to-gray-800"
+                                        [style.width.%]="option.percentage"
+                                        [style.transition-delay]="(i * 100) + 'ms'">
+                                    </div>
+                                </div>
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="mt-5 pt-4 border-t border-gray-200/50 flex items-center justify-between
+                                    transition-all duration-300 group-hover/card:border-gray-300/60">
+                            <span class="text-xs text-gray-600 font-medium transition-colors duration-300
+                                        group-hover/card:text-gray-700">
+                                {{ poll.options.length }} options available
+                            </span>
+                            @if (selectedPollId() === poll.id) {
+                                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-black
+                                            animate-fade-in">
+                                    <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                    </svg>
+                                    Selected
+                                </span>
+                            }
+                        </div>
+                    </button>
+                    }
+                </div>
+            </div>
+
+
+            </section>
+
+            <section class="grid lg:grid-cols-[1.3fr_minmax(0,1fr)] gap-6 items-stretch">
+                <div class="bg-white/70 backdrop-blur-xl border border-white/60 rounded-3xl shadow-xl p-6 flex flex-col min-h-150">
+                    <div class="flex items-center justify-between mb-5 pb-4 border-b border-gray-200/50">
+                        <div class="flex-1">
+                            <p class="text-xs text-gray-600 uppercase tracking-wide font-semibold mb-1">
+                                Poll Discussion
+                            </p>
+                            <h3 class="text-lg font-bold text-black line-clamp-1">
+                                {{ selectedPoll().title }}
+                            </h3>
+                        </div>
+                        <div class="flex items-center gap-2 px-3 py-2 bg-green-50 rounded-xl">
+                            <div class="relative">
+                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                <div class="absolute inset-0 w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+                            </div>
+                            <span class="text-xs font-bold text-green-700">Live</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                        @if (pollMessages().length === 0) {
+                        <div class="h-full flex flex-col items-center justify-center text-center px-4">
+                            <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700 mb-1">No messages yet</p>
+                            <p class="text-xs text-gray-500">Be the first to start the conversation!</p>
+                        </div>
+                        } @else {
+                        @for (msg of pollMessages(); track msg.id) {
+                        <div class="flex gap-3 animate-fade-in" [class.justify-end]="msg.author === 'you'">
+                            @if (msg.author === 'other') {
+                            <div class="w-9 h-9 rounded-full bg-linear-to-br from-[#F5AFAF] to-[#F9DFDF] shrink-0 flex items-center justify-center text-white font-bold text-sm">
+                                {{ msg.name.charAt(0).toUpperCase() }}
+                            </div>
+                            }
+
+                            <div class="max-w-[75%] space-y-1" [class.items-end]="msg.author === 'you'">
+                                <div class="flex items-center gap-2 text-xs"
+                                    [class.justify-end]="msg.author === 'you'">
+                                    <span class="font-bold text-gray-900">
+                                        {{ msg.name }}
+                                    </span>
+                                    <span class="text-gray-500">
+                                        {{ formatTime(msg.timestamp) }}
+                                    </span>
+                                </div>
+
+                                <div class="px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm"
+                                    [class.bg-white]="msg.author === 'other'"
+                                    [class.bg-black]="msg.author === 'you'"
+                                    [class.text-black]="msg.author === 'other'"
+                                    [class.text-white]="msg.author === 'you'"
+                                    [class.rounded-tl-sm]="msg.author === 'other'"
+                                    [class.rounded-tr-sm]="msg.author === 'you'">
+                                    {{ msg.text }}
+                                </div>
+                            </div>
+
+                            @if (msg.author === 'you') {
+                            <div class="w-9 h-9 rounded-full bg-linear-to-br from-gray-700 to-gray-900 shrink-0 flex items-center justify-center text-white font-bold text-sm">
+                                Y
+                            </div>
+                            }
+                        </div>
+                        }
+                        }
+                    </div>
+
+                    <form (ngSubmit)="sendMessage()" class="mt-5 pt-4 border-t border-gray-200/50 flex items-center gap-3">
+                        <input 
+                            type="text"
+                            class="flex-1 rounded-2xl border-2 border-gray-200 bg-white px-5 py-3.5 text-sm text-black outline-none focus:ring-2 focus:ring-black focus:border-black placeholder:text-gray-400 transition-all"
+                            placeholder="Type your message..."
+                            [ngModel]="newMessageText()"
+                            (ngModelChange)="newMessageText.set($event)"
+                            name="chatInput" 
+                        />
+                        <button 
+                            type="submit"
+                            class="inline-flex items-center justify-center rounded-2xl px-6 py-3.5 bg-black text-white text-sm font-bold shadow-lg hover:shadow-xl hover:scale-105 transform transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            [disabled]="!newMessageText().trim()">
+                            <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                            Send
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Selected Poll Details -->
+                <div class="bg-white/70 backdrop-blur-xl border border-white/60 rounded-3xl shadow-xl p-7 space-y-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600 uppercase tracking-wide font-semibold">
+                                Poll Details
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-black mb-2 leading-tight">
+                            {{ selectedPoll().title }}
+                        </h3>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            {{ selectedPoll().question }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-4 py-3 border-y border-gray-200/50">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                            </svg>
+                            <span class="text-sm font-bold text-black">
+                                {{ selectedPoll().totalVotes }} votes
+                            </span>
+                        </div>
+                        <div class="w-1 h-1 rounded-full bg-gray-400"></div>
+                        <span class="text-sm text-gray-600 font-medium">Public Poll</span>
+                        <div class="w-1 h-1 rounded-full bg-gray-400"></div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="text-sm text-gray-600 font-medium">Live</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold text-black uppercase tracking-wide">Vote Distribution</h4>
+                        @for (option of selectedPoll().options || []; track option.id) {
+                        <div class="group">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-900 font-semibold">
+                                    {{ option.text }}
+                                </span>
+                                <span class="text-base font-bold text-black">
+                                    {{ option.percentage }}%
+                                </span>
+                            </div>
+                            <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div 
+                                    class="h-full bg-black rounded-full transition-all duration-700 ease-out"
+                                    [style.width.%]="option.percentage">
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200/50">
+                        <div class="bg-gray-50 rounded-2xl p-4">
+                            <div class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-black shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+                                </svg>
+                                <p class="text-xs text-gray-700 leading-relaxed">
+                                    Join the live chat to discuss this poll with other participants in real-time. 
+                                    Share your thoughts and see what others are saying!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>

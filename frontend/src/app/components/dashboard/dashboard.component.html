@@ -1,0 +1,280 @@
+<div class="min-h-screen bg-linear-to-br from-[#FCF8F8] via-[#FBEFEF] to-[#F9DFDF]">
+  
+  <!-- Background Decorative Elements -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-[#F5AFAF]/20 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-[#F9DFDF]/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="fixed left-0 top-0 h-screen w-64 bg-white/30 backdrop-blur-xl border-r border-white/60 z-40 hidden lg:block">
+    <div class="p-6">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2 mb-8">
+        <div class="w-10 h-10 bg-linear-to-br from-[#F5AFAF] to-[#F9DFDF] rounded-xl flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+          </svg>
+        </div>
+        <h1 class="text-xl font-bold bg-linear-to-r from-[#F5AFAF] to-[#f79292] bg-clip-text text-transparent">
+          PingPoll
+        </h1>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="space-y-2">
+        <button 
+          (click)="selectTab('overview')"
+          [class]="selectedTab() === 'overview' ? 'bg-[#F5AFAF]/20 text-[#F5AFAF] border-[#F5AFAF]/30' : 'text-gray-700 hover:bg-white/40 border-transparent'"
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 border">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          <span class="font-semibold">Overview</span>
+        </button>
+
+        <button 
+          (click)="selectTab('polls')"
+          [class]="selectedTab() === 'polls' ? 'bg-[#F5AFAF]/20 text-[#F5AFAF] border-[#F5AFAF]/30' : 'text-gray-700 hover:bg-white/40 border-transparent'"
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 border">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+          </svg>
+          <span class="font-semibold">My Polls</span>
+        </button>
+      </nav>
+
+      <!-- Create Poll Button -->
+      <button 
+        (click)="createNewPoll()"
+        class="w-full mt-6 px-6 py-4 bg-linear-to-r from-[#F5AFAF] to-[#F9DFDF] rounded-xl text-white font-semibold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+        <span class="flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>Create Poll</span>
+        </span>
+      </button>
+    </div>
+
+    <!-- User Profile at Bottom -->
+    <div class="absolute bottom-6 left-6 right-6">
+      <div class="bg-white/40 backdrop-blur-lg border border-white/60 rounded-xl p-4">
+        <div class="flex items-center gap-3">
+          <img 
+            [src]="currentUser()?.picture || 'default-profile.png'" 
+            [alt]="currentUser()?.name"
+            class="w-10 h-10 rounded-full border-2 border-[#F5AFAF]"
+            onerror="this.src='default-profile.png'"
+          />
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-900 truncate">{{ currentUser()?.name }}</p>
+            <p class="text-xs text-gray-600 truncate">{{ currentUser()?.email }}</p>
+          </div>
+        </div>
+        <button 
+          (click)="handleLogout()"
+          class="w-full mt-3 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-lg text-red-600 text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          Logout
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="lg:ml-64 relative z-10">
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-30 bg-white/30 backdrop-blur-xl border-b border-white/60">
+      <div class="px-6 py-4 flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">
+            @if (selectedTab() === 'overview') { Dashboard Overview }
+            @if (selectedTab() === 'polls') { My Polls }
+          </h2>
+          <p class="text-sm text-gray-600 mt-1">
+            Welcome back, {{ currentUser()?.name?.split(' ') }}!
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button 
+            (click)="navigateToHome()"
+            class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-white transition-all text-gray-700 font-semibold">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span>Home</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="p-6">
+      
+      @if (selectedTab() === 'overview') {
+        <div class="grid  gap-6">
+          <!-- Recent Polls -->
+          <div class="lg:col-span-2">
+            <div class="bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl p-6 shadow-lg">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold text-gray-900">Recent Polls</h3>
+                <button 
+                  (click)="selectTab('polls')"
+                  class="text-sm text-[#F5AFAF] hover:text-[#F5AFAF]/80 font-semibold">
+                  View All
+                </button>
+              </div>
+
+              <div class="space-y-4">
+                @for (poll of polls().slice(0, 3); track poll.id) {
+                  <div class="bg-white/50 backdrop-blur-lg rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+                    <div class="flex items-start justify-between mb-3">
+                      <div class="flex-1">
+                        <h4 class="font-semibold text-gray-900 mb-1">{{ poll.title }}</h4>
+                        <p class="text-sm text-gray-600">{{ poll.question }}</p>
+                      </div>
+                      <span 
+                        [class]="'text-xs px-3 py-1 rounded-full border font-semibold ' + getStatusColor(poll.status)">
+                        {{ poll.status }}
+                      </span>
+                    </div>
+
+                    <div class="space-y-2 mb-4">
+                      @for (option of poll.options.slice(0, 2); track option.id) {
+                        <div>
+                          <div class="flex items-center justify-between text-sm mb-1">
+                            <span class="text-gray-700">{{ option.text }}</span>
+                            <span class="font-semibold text-[#F5AFAF]">{{ option.percentage }}%</span>
+                          </div>
+                          <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                              class="h-full bg-linear-to-r from-[#F5AFAF] to-[#F9DFDF] rounded-full transition-all duration-500"
+                              [style.width.%]="option.percentage">
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-gray-600">
+                      <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {{ poll.totalVotes }} votes
+                      </span>
+                      <button 
+                        (click)="viewPoll(poll.id)"
+                        class="text-[#F5AFAF] hover:text-[#F5AFAF]/80 font-semibold">
+                        View Details →
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Polls Tab -->
+      @if (selectedTab() === 'polls') {
+        <div class="bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl p-6 shadow-lg">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-gray-900">All Polls ({{ polls().length }})</h3>
+            <button 
+              (click)="createNewPoll()"
+              class="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#F5AFAF] to-[#F9DFDF] rounded-xl text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              New Poll
+            </button>
+          </div>
+
+          <div class="grid gap-4">
+            @for (poll of polls(); track poll.id) {
+              <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div class="flex items-start justify-between mb-4">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                      <h4 class="font-bold text-gray-900 text-lg">{{ poll.title }}</h4>
+                      <span 
+                        [class]="'text-xs px-3 py-1 rounded-full border font-semibold ' + getStatusColor(poll.status)">
+                        {{ poll.status }}
+                      </span>
+                    </div>
+                    <p class="text-sm text-gray-600">{{ poll.question }}</p>
+                  </div>
+                </div>
+
+                <div class="space-y-3 mb-4">
+                  @for (option of poll.options; track option.id) {
+                    <div>
+                      <div class="flex items-center justify-between text-sm mb-1">
+                        <span class="text-gray-700 font-medium">{{ option.text }}</span>
+                        <span class="font-bold text-[#F5AFAF]">{{ option.votes }} ({{ option.percentage }}%)</span>
+                      </div>
+                      <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                        <div 
+                          class="h-full bg-linear-to-r from-[#F5AFAF] to-[#F9DFDF] rounded-full transition-all duration-500"
+                          [style.width.%]="option.percentage">
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <div class="flex items-center gap-4 text-sm text-gray-600">
+                    <span class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      {{ poll.totalVotes }} votes
+                    </span>
+                    <span class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                      </svg>
+                      {{ poll.createdAt | date: 'MMM d' }}
+                    </span>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <button 
+                      (click)="viewPoll(poll.id)"
+                      class="p-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 transition-all">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      </svg>
+                    </button>
+                    <button 
+                      (click)="editPoll(poll.id)"
+                      class="p-2 rounded-lg bg-[#F5AFAF]/10 hover:bg-[#F5AFAF]/20 text-[#F5AFAF] transition-all">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                      </svg>
+                    </button>
+                    <button 
+                      (click)="deletePoll(poll.id)"
+                      class="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-all">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+</div>
