@@ -81,10 +81,6 @@ A modern, full-stack polling application built with the MEAN stack (MongoDB, Exp
 - Firebase project (for Google OAuth)
 - Git
 
-## 🛠️ Installation & Setup
+Built with ❤️ using the MEAN Stack, Happy Polling! 🗳️✨
 
-### 1. Clone the Repository
 
-```bash
-git clone <your-repo-url>
-cd pingpoll
