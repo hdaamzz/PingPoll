@@ -77,43 +77,7 @@ getTotalVotes(): number {
         { id: '3', text: 'Office', percentage: 15 },
         { id: '4', text: 'Flexible', percentage: 5 },
       ],
-    },
-    {
-      id: '1',
-      title: 'Favorite Programming Language',
-      question: 'What is your favorite programming language right now?',
-      totalVotes: 324,
-      options: [
-        { id: '1', text: 'TypeScript', percentage: 45 },
-        { id: '2', text: 'JavaScript', percentage: 30 },
-        { id: '3', text: 'Python', percentage: 20 },
-        { id: '4', text: 'Java', percentage: 5 },
-      ],
-    },
-    {
-      id: '2',
-      title: 'Best Frontend Framework',
-      question: 'Which frontend framework do you prefer?',
-      totalVotes: 300,
-      options: [
-        { id: '1', text: 'Angular', percentage: 40 },
-        { id: '2', text: 'React', percentage: 35 },
-        { id: '3', text: 'Vue', percentage: 20 },
-        { id: '4', text: 'Svelte', percentage: 5 },
-      ],
-    },
-    {
-      id: '3',
-      title: 'Work Setup',
-      question: 'What is your preferred work model?',
-      totalVotes: 400,
-      options: [
-        { id: '1', text: 'Fully Remote', percentage: 50 },
-        { id: '2', text: 'Hybrid', percentage: 30 },
-        { id: '3', text: 'Office', percentage: 15 },
-        { id: '4', text: 'Flexible', percentage: 5 },
-      ],
-    },
+    }
   ]);
 
   selectedPollId = signal<string>('1');

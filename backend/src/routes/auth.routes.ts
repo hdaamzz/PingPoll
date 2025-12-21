@@ -12,6 +12,4 @@ router.post('/google', authController.googleAuth);
 
 router.get('/me', authMiddleware.authenticate, authController.getCurrentUser);
 router.post('/logout', authMiddleware.authenticate, authController.logout);
-router.post('/refresh', authMiddleware.authenticate, authController.refreshToken);
-
 export default router;

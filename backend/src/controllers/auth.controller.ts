@@ -4,7 +4,6 @@ import { IAuthService } from '../services/interfaces/auth-service.interface';
 import { IAuthController } from './interfaces/auth-controller.interface';
 import { AuthRequest } from '../middlewares/interfaces/auth-middleware.interface';
 import { CookieUtil } from '../shared/utils/cookie.util';
-import { JwtUtil } from '../shared/utils/jwt.util';
 import { HTTP_STATUS } from '../constants/http-status.constants';
 import { AUTH_MESSAGES } from '../constants/messages.constants';
 import { GoogleAuthDto } from '../shared/dtos/auth/google-auth.dto';
@@ -87,38 +86,6 @@ export class AuthController implements IAuthController {
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: AUTH_MESSAGES.LOGOUT_FAILED,
-      });
-    }
-  };
-
-  refreshToken = async (req: AuthRequest, res: Response): Promise<void> => {
-    try {
-      const user = req.user;
-
-      if (!user) {
-        res.status(HTTP_STATUS.UNAUTHORIZED).json({
-          success: false,
-          message: AUTH_MESSAGES.NOT_AUTHENTICATED,
-        });
-        return;
-      }
-
-      const jwtToken = JwtUtil.generateToken({
-        userId: user.id,
-        email: user.email,
-      });
-
-      CookieUtil.setAuthCookie(res, jwtToken);
-
-      res.status(HTTP_STATUS.OK).json({
-        success: true,
-        message: AUTH_MESSAGES.TOKEN_REFRESH_SUCCESS,
-        data: { token: jwtToken },
-      });
-    } catch (error) {
-      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-        success: false,
-        message: AUTH_MESSAGES.TOKEN_REFRESH_FAILED,
       });
     }
   };

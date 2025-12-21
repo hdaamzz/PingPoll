@@ -7,5 +7,4 @@ export interface AuthRequest extends Request {
 
 export interface IAuthMiddleware {
   authenticate(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
-  optionalAuth(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
 }

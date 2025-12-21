@@ -51,27 +51,4 @@ export class AuthMiddleware implements IAuthMiddleware {
     }
   };
 
-  optionalAuth = async (
-    req: AuthRequest,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const token = CookieUtil.getAuthCookie(req);
-
-      if (token) {
-        const decoded = JwtUtil.verifyToken(token);
-        const user = await this.authService.getUserById(decoded.userId);
-
-        if (user) {
-          req.userId = decoded.userId;
-          req.user = user;
-        }
-      }
-
-      next();
-    } catch (error) {
-      next();
-    }
-  };
 }

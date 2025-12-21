@@ -19,3 +19,19 @@ export const USER_MESSAGES = {
   USER_UPDATED: 'User updated successfully',
   USER_NOT_FOUND: 'User not found',
 } as const;
+
+export const POLL_MESSAGES = {
+  POLL_CREATED: 'Poll created successfully',
+  POLL_UPDATED: 'Poll updated successfully',
+  POLL_DELETED: 'Poll deleted successfully',
+  POLL_NOT_FOUND: 'Poll not found',
+  POLL_UNAUTHORIZED: 'You are not authorized to perform this action',
+  POLL_CREATE_FAILED: 'Failed to create poll',
+  POLL_UPDATE_FAILED: 'Failed to update poll',
+  POLL_DELETE_FAILED: 'Failed to delete poll',
+  POLL_FETCH_FAILED: 'Failed to fetch polls',
+  POLL_VOTE_SUCCESS: 'Vote recorded successfully',
+  POLL_VOTE_FAILED: 'Failed to record vote',
+  POLL_NOT_ACTIVE: 'This poll is not active',
+  POLL_EXPIRED: 'This poll has expired',
+} as const;

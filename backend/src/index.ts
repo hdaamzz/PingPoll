@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import express from 'express';
+import { Server } from 'socket.io';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -7,13 +8,22 @@ import mongoose from 'mongoose';
 import { ENV_CONFIG } from './config/env.config.js';
 import { createServer } from 'http';
 import connectDB from './config/database.connect.js';
-import './container.js';
-import authRoutes from './routes/auth.routes.js';
+import Routes from './routes/routes.js';
+import { container } from './container.js';
+import { SocketService } from './services/socket.service.js';
 
 
 const app = express();
 const httpServer = createServer(app);
 const PORT = ENV_CONFIG.PORT;
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: ENV_CONFIG.FRONTEND_URL,
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
 
 const corsOptions = {
   origin: ENV_CONFIG.FRONTEND_URL,
@@ -34,11 +44,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use('/api/auth', authRoutes);
+app.use('/api',Routes);
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
+const socketService = container.resolve(SocketService);
+socketService.initialize(io);
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
@@ -51,4 +63,4 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-export default app;
+export { io };

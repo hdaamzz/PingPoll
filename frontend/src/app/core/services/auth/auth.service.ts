@@ -189,28 +189,6 @@ export class AuthService {
     );
   }
 
-  refreshToken(): Observable<string> {
-    return this.http
-      .post<ApiResponse<{ token: string }>>(
-        `${this.API_URL}/auth/refresh`,
-        {},
-        { withCredentials: true }
-      )
-      .pipe(
-        tap((response) => {
-          if (response.success && response.data) {
-            localStorage.setItem('token', response.data.token);
-          }
-        }),
-        map((response) => response.data?.token || ''),
-        catchError((error) => {
-          this.toastService.error('Session expired. Please login again.');
-          this.router.navigate(['/']);
-          return throwError(() => error);
-        })
-      );
-  }
-
   getCurrentUser(): User | null {
     return this.currentUser();
   }

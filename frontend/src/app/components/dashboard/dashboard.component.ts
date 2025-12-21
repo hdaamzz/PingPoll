@@ -1,25 +1,9 @@
 import { Component, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth.service';
-
-interface Poll {
-  id: string;
-  title: string;
-  question: string;
-  options: PollOption[];
-  totalVotes: number;
-  status: 'active' | 'closed' | 'draft';
-  createdAt: Date;
-  expiresAt: Date;
-}
-
-interface PollOption {
-  id: string;
-  text: string;
-  votes: number;
-  percentage: number;
-}
+import { PollService, Poll, CreatePollRequest } from '../../core/services/poll/poll.service';
 
 interface DashboardStats {
   totalPolls: number;
@@ -27,127 +11,93 @@ interface DashboardStats {
   totalVotes: number;
 }
 
-interface RecentActivity {
+interface PollOptionForm {
   id: string;
-  type: 'vote' | 'poll_created' | 'poll_closed' | 'comment';
-  message: string;
-  timestamp: Date;
-  pollTitle?: string;
+  text: string;
 }
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
+  private pollService = inject(PollService);
   private router = inject(Router);
 
   currentUser = this.authService.currentUser;
   showUserMenu = signal(false);
-  selectedTab = signal<'overview' | 'polls' | 'analytics' | 'settings'>('overview');
+  selectedTab = signal<'overview' | 'polls' | 'create'>('overview');
 
-  // Dashboard data
+  polls = signal<Poll[]>([]);
+  isLoading = signal(false);
+  errorMessage = signal<string | null>(null);
+
   stats = signal<DashboardStats>({
-    totalPolls: 12,
-    activePolls: 5,
-    totalVotes: 1247
+    totalPolls: 0,
+    activePolls: 0,
+    totalVotes: 0
   });
 
-  polls = signal<Poll[]>([
-    {
-      id: '1',
-      title: 'Favorite Programming Language',
-      question: 'What is your favorite programming language?',
-      options: [
-        { id: '1', text: 'TypeScript', votes: 145, percentage: 45 },
-        { id: '2', text: 'JavaScript', votes: 98, percentage: 30 },
-        { id: '3', text: 'Python', votes: 65, percentage: 20 },
-        { id: '4', text: 'Java', votes: 16, percentage: 5 },
-      ],
-      totalVotes: 324,
-      status: 'active',
-      createdAt: new Date('2025-12-18'),
-      expiresAt: new Date('2025-12-25')
-    },
-    {
-      id: '2',
-      title: 'Best Frontend Framework',
-      question: 'Which frontend framework do you prefer?',
-      options: [
-        { id: '1', text: 'Angular', votes: 120, percentage: 40 },
-        { id: '2', text: 'React', votes: 105, percentage: 35 },
-        { id: '3', text: 'Vue', votes: 60, percentage: 20 },
-        { id: '4', text: 'Svelte', votes: 15, percentage: 5 },
-      ],
-      totalVotes: 300,
-      status: 'active',
-      createdAt: new Date('2025-12-19'),
-      expiresAt: new Date('2025-12-26')
-    },
-    {
-      id: '3',
-      title: 'Remote Work Preference',
-      question: 'What is your preferred work model?',
-      options: [
-        { id: '1', text: 'Fully Remote', votes: 200, percentage: 50 },
-        { id: '2', text: 'Hybrid', votes: 120, percentage: 30 },
-        { id: '3', text: 'Office', votes: 60, percentage: 15 },
-        { id: '4', text: 'Flexible', votes: 20, percentage: 5 },
-      ],
-      totalVotes: 400,
-      status: 'closed',
-      createdAt: new Date('2025-12-15'),
-      expiresAt: new Date('2025-12-20')
-    },
+  title = signal('');
+  question = signal('');
+  options = signal<PollOptionForm[]>([
+    { id: '1', text: '' },
+    { id: '2', text: '' },
   ]);
-
-  recentActivity = signal<RecentActivity[]>([
-    {
-      id: '1',
-      type: 'vote',
-      message: 'New vote on "Favorite Programming Language"',
-      timestamp: new Date('2025-12-20T15:30:00'),
-      pollTitle: 'Favorite Programming Language',
-    },
-    {
-      id: '2',
-      type: 'poll_created',
-      message: 'Created new poll "Best Frontend Framework"',
-      timestamp: new Date('2025-12-20T14:15:00'),
-      pollTitle: 'Best Frontend Framework',
-    },
-    {
-      id: '3',
-      type: 'vote',
-      message: '5 new votes on "Remote Work Preference"',
-      timestamp: new Date('2025-12-20T13:45:00'),
-      pollTitle: 'Remote Work Preference',
-    },
-    {
-      id: '4',
-      type: 'poll_closed',
-      message: 'Poll "Remote Work Preference" has closed',
-      timestamp: new Date('2025-12-20T12:00:00'),
-      pollTitle: 'Remote Work Preference',
-    },
-  ]);
+  expiresAt = signal<string>('');
+  isSubmitting = signal(false);
+  createErrorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
+      return;
     }
+    this.loadUserPolls();
+  }
+
+  loadUserPolls(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.pollService.getUserPolls().subscribe({
+      next: (polls) => {
+        this.polls.set(polls);
+        this.updateStats(polls);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Failed to load polls:', error);
+        this.errorMessage.set('Failed to load polls');
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  updateStats(polls: Poll[]): void {
+    const totalVotes = polls.reduce((sum, poll) => sum + poll.totalVotes, 0);
+    const activePolls = polls.filter(p => p.status === 'active').length;
+
+    this.stats.set({
+      totalPolls: polls.length,
+      activePolls: activePolls,
+      totalVotes: totalVotes
+    });
   }
 
   toggleUserMenu(): void {
     this.showUserMenu.update(value => !value);
   }
 
-  selectTab(tab: 'overview' | 'polls'): void {
+  selectTab(tab: 'overview' | 'polls' | 'create'): void {
     this.selectedTab.set(tab);
+    if (tab === 'create') {
+      this.resetCreateForm();
+    }
   }
 
   handleLogout(): void {
@@ -166,31 +116,109 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   createNewPoll(): void {
-    this.router.navigate(['/polls/create'])
-    console.log('Create new poll');
+    this.selectTab('create');
   }
 
   viewPoll(pollId: string): void {
-    console.log('View poll:', pollId);
-  }
-
-  editPoll(pollId: string): void {
-    console.log('Edit poll:', pollId);
+    this.router.navigate(['/polls', pollId]);
   }
 
   deletePoll(pollId: string): void {
-    console.log('Delete poll:', pollId);
-    this.polls.update(polls => polls.filter(p => p.id !== pollId));
+    if (!confirm('Are you sure you want to delete this poll?')) {
+      return;
+    }
+
+    this.pollService.deletePoll(pollId).subscribe({
+      next: () => {
+        this.polls.update(polls => polls.filter(p => p.id !== pollId));
+        this.updateStats(this.polls());
+      },
+      error: (error) => {
+        console.error('Failed to delete poll:', error);
+        alert('Failed to delete poll: ' + error.message);
+      },
+    });
   }
 
-  getActivityIcon(type: string): string {
-    const icons = {
-      vote: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-      poll_created: 'M12 4v16m8-8H4',
-      poll_closed: 'M6 18L18 6M6 6l12 12',
-      comment: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+  // Create Poll Methods
+  addOption(): void {
+    const current = this.options();
+    if (current.length >= 6) return;
+    const nextId = (current.length + 1).toString();
+    this.options.set([...current, { id: nextId, text: '' }]);
+  }
+
+  removeOption(id: string): void {
+    const current = this.options();
+    if (current.length <= 2) return;
+    this.options.set(current.filter(o => o.id !== id));
+  }
+
+  updateOptionText(id: string, value: string): void {
+    this.options.update(opts =>
+      opts.map(o => (o.id === id ? { ...o, text: value } : o)),
+    );
+  }
+
+  resetCreateForm(): void {
+    this.title.set('');
+    this.question.set('');
+    this.options.set([
+      { id: '1', text: '' },
+      { id: '2', text: '' },
+    ]);
+    this.expiresAt.set('');
+    this.createErrorMessage.set(null);
+  }
+
+  cancelCreate(): void {
+    this.resetCreateForm();
+    this.selectTab('overview');
+  }
+
+  submitPoll(): void {
+    this.createErrorMessage.set(null);
+
+    if (!this.title().trim() || !this.question().trim()) {
+      this.createErrorMessage.set('Title and question are required');
+      return;
+    }
+
+    const filledOptions = this.options()
+      .map(o => ({ ...o, text: o.text.trim() }))
+      .filter(o => o.text.length > 0);
+
+    if (filledOptions.length < 2) {
+      this.createErrorMessage.set('At least 2 options are required');
+      return;
+    }
+
+    this.isSubmitting.set(true);
+
+    const pollData: CreatePollRequest = {
+      title: this.title(),
+      question: this.question(),
+      options: filledOptions,
     };
-    return icons[type as keyof typeof icons] || icons.vote;
+
+    if (this.expiresAt()) {
+      pollData.expiresAt = new Date(this.expiresAt());
+    }
+
+    this.pollService.createPoll(pollData).subscribe({
+      next: (poll) => {
+        console.log('Poll created:', poll);
+        this.resetCreateForm();
+        this.isSubmitting.set(false);
+        this.loadUserPolls(); 
+        this.selectTab('polls');
+      },
+      error: (error) => {
+        console.error('Failed to create poll:', error);
+        this.createErrorMessage.set(error.message || 'Failed to create poll');
+        this.isSubmitting.set(false);
+      },
+    });
   }
 
   getStatusColor(status: string): string {
@@ -215,7 +243,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return 'Just now';
   }
 
-  ngOnDestroy(): void {
-    
-  }
+  ngOnDestroy(): void {}
 }
