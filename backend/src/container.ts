@@ -8,16 +8,20 @@ import { PollRepository } from './repositories/poll.repository';
 import { PollService } from './services/poll.service';
 import { PollController } from './controllers/poll.controller';
 import { SocketService } from './services/socket.service';
+import { MessageRepository } from './repositories/message.repository';
+import { MessageService } from './services/message.service';
 
 // Register repositories
 container.register('IUserRepository', { useClass: UserRepository});
 container.register('IPollRepository', { useClass: PollRepository });
+container.register('IMessageRepository', { useClass: MessageRepository });
 
 
 // Register services
 container.register('IAuthService', { useClass: AuthService});
 container.register('IPollService', { useClass: PollService });
 container.register('SocketService', { useClass: SocketService });
+container.register('IMessageService', { useClass: MessageService });
 
 
 // Register controllers
@@ -29,5 +33,6 @@ container.register('IAuthMiddleware', {
 });
 
 export { container };
+
 
 

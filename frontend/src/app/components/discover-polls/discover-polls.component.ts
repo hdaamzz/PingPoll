@@ -1,10 +1,16 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { SocketService, ChatMessage as SocketChatMessage, TypingUser } from '../../core/services/socket/socket.service';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { PollService } from '../../core/services/poll/poll.service';
+import { Subscription } from 'rxjs';
 
 interface PollOption {
   id: string;
   text: string;
+  votes: number;
   percentage: number;
 }
 
@@ -14,15 +20,18 @@ interface Poll {
   question: string;
   totalVotes: number;
   options: PollOption[];
+  status: string;
 }
 
 interface ChatMessage {
   id: string;
   pollId: string;
-  author: 'you' | 'other';
-  name: string;
+  userId: string;
+  userName: string;
+  userPicture: string;
   text: string;
   timestamp: Date;
+  isCurrentUser: boolean;
 }
 
 @Component({
@@ -31,117 +40,302 @@ interface ChatMessage {
   imports: [CommonModule, FormsModule],
   templateUrl: './discover-polls.component.html',
 })
-export class DiscoverPollsComponent {
-getTotalPolls(): number {
-  return this.polls().length;
-}
+export class DiscoverPollsComponent implements OnInit, OnDestroy {
+  private socketService = inject(SocketService);
+  private authService = inject(AuthService);
+  private pollService = inject(PollService);
+  private router = inject(Router);
+  
+  private subscriptions: Subscription[] = [];
+  private typingTimeouts = new Map<string, any>();
 
-getTotalVotes(): number {
-  return this.polls().reduce((sum, poll) => sum + poll.totalVotes, 0);
-}
-
-  // Static sample data – replace with API later
-  polls = signal<Poll[]>([
-    {
-      id: '1',
-      title: 'Favorite Programming Language',
-      question: 'What is your favorite programming language right now?',
-      totalVotes: 324,
-      options: [
-        { id: '1', text: 'TypeScript', percentage: 45 },
-        { id: '2', text: 'JavaScript', percentage: 30 },
-        { id: '3', text: 'Python', percentage: 20 },
-        { id: '4', text: 'Java', percentage: 5 },
-      ],
-    },
-    {
-      id: '2',
-      title: 'Best Frontend Framework',
-      question: 'Which frontend framework do you prefer?',
-      totalVotes: 300,
-      options: [
-        { id: '1', text: 'Angular', percentage: 40 },
-        { id: '2', text: 'React', percentage: 35 },
-        { id: '3', text: 'Vue', percentage: 20 },
-        { id: '4', text: 'Svelte', percentage: 5 },
-      ],
-    },
-    {
-      id: '3',
-      title: 'Work Setup',
-      question: 'What is your preferred work model?',
-      totalVotes: 400,
-      options: [
-        { id: '1', text: 'Fully Remote', percentage: 50 },
-        { id: '2', text: 'Hybrid', percentage: 30 },
-        { id: '3', text: 'Office', percentage: 15 },
-        { id: '4', text: 'Flexible', percentage: 5 },
-      ],
-    }
-  ]);
-
-  selectedPollId = signal<string>('1');
-
-  // Simple in-memory chat messages
-  messages = signal<ChatMessage[]>([
-    {
-      id: 'm1',
-      pollId: '1',
-      author: 'other',
-      name: 'Alex',
-      text: 'TypeScript all the way!',
-      timestamp: new Date(),
-    },
-    {
-      id: 'm2',
-      pollId: '1',
-      author: 'you',
-      name: 'You',
-      text: 'Same here, especially with Angular.',
-      timestamp: new Date(),
-    },
-    {
-      id: 'm3',
-      pollId: '2',
-      author: 'other',
-      name: 'Sara',
-      text: 'Angular for structured projects.',
-      timestamp: new Date(),
-    },
-  ]);
-
+  polls = signal<Poll[]>([]);
+  selectedPollId = signal<string>('');
+  messages = signal<ChatMessage[]>([]);
   newMessageText = signal<string>('');
+  typingUsers = signal<TypingUser[]>([]);
+  activeUsersCount = signal<number>(0);
+  isLoading = signal<boolean>(true);
+  errorMessage = signal<string | null>(null);
+  isConnected = this.socketService.isConnected;
 
-  selectedPoll = computed(() =>
-    this.polls().find((p) => p.id === this.selectedPollId()) ?? this.polls()[0]
-  );
+  currentUser = computed(() => this.authService.currentUser());
+
+  selectedPoll = computed(() => {
+    const polls = this.polls();
+    const selectedId = this.selectedPollId();
+    return polls.find((p) => p.id === selectedId) || polls[0];
+  });
 
   pollMessages = computed(() =>
     this.messages().filter((m) => m.pollId === this.selectedPollId())
   );
 
+  typingUsersText = computed(() => {
+    const users = this.typingUsers();
+    if (users.length === 0) return '';
+    if (users.length === 1) return `${users[0].userName} is typing...`;
+    if (users.length === 2) return `${users[0].userName} and ${users[1].userName} are typing...`;
+    return `${users[0].userName} and ${users.length - 1} others are typing...`;
+  });
+
+  ngOnInit(): void {
+    // Check authentication
+    if (!this.authService.isUserAuthenticated()) {
+      console.warn('User not authenticated, redirecting...');
+      this.router.navigate(['/']);
+      return;
+    }
+    this.subscriptions.push(
+      this.socketService.onChatHistory().subscribe((messages) => {
+        console.log('Received chat history:', messages);
+        this.messages.set(messages.map(msg => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+          isCurrentUser: msg.userId === this.currentUser()?.id
+        })));
+      })
+    );
+
+    // Load active polls first
+    this.loadActivePolls();
+  }
+
+  private loadActivePolls(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.pollService.getActivePolls().subscribe({
+      next: (polls) => {
+        console.log('Loaded active polls:', polls);
+        
+        if (polls.length === 0) {
+          this.errorMessage.set('No active polls available. Create one to get started!');
+          this.isLoading.set(false);
+          return;
+        }
+
+        this.polls.set(polls);
+        this.selectedPollId.set(polls[0].id);
+        this.isLoading.set(false);
+
+        // Now connect to socket and join the first poll
+        this.initializeSocket();
+      },
+      error: (error) => {
+        console.error('Failed to load polls:', error);
+        this.errorMessage.set('Failed to load polls. Please refresh the page.');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  private initializeSocket(): void {
+    console.log('Initializing socket connection...');
+    
+    // Connect to socket
+    this.socketService.connect();
+
+    // Wait for connection before subscribing
+    setTimeout(() => {
+      // Subscribe to socket events
+      this.subscriptions.push(
+        this.socketService.onPollUpdated().subscribe((poll) => {
+          console.log('Poll updated:', poll);
+          this.updatePoll(poll);
+        }),
+
+        this.socketService.onChatMessage().subscribe((message) => {
+          console.log('Chat message received:', message);
+          this.addMessage(message);
+        }),
+
+        this.socketService.onUserTyping().subscribe((user) => {
+          this.addTypingUser(user);
+        }),
+
+        this.socketService.onUserStoppedTyping().subscribe(({ userId }) => {
+          this.removeTypingUser(userId);
+        }),
+
+        this.socketService.onActiveUsers().subscribe(({ count }) => {
+          this.activeUsersCount.set(count);
+        })
+      );
+
+      // Join the first poll after a short delay
+      setTimeout(() => {
+        if (this.isConnected()) {
+          this.joinCurrentPoll();
+        } else {
+          console.warn('Socket not connected, retrying...');
+          setTimeout(() => this.joinCurrentPoll(), 1000);
+        }
+      }, 500);
+    }, 300);
+  }
+
+  ngOnDestroy(): void {
+    // Leave current poll
+    const pollId = this.selectedPollId();
+    if (pollId) {
+      this.socketService.leavePoll(pollId);
+    }
+
+    // Clean up subscriptions
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+
+    // Disconnect socket
+    this.socketService.disconnect();
+  }
+
+  getTotalPolls(): number {
+    return this.polls().length;
+  }
+
+  getTotalVotes(): number {
+    return this.polls().reduce((sum, poll) => sum + poll.totalVotes, 0);
+  }
+
   selectPoll(id: string): void {
+    const currentPollId = this.selectedPollId();
+    if (currentPollId === id) return;
+
+    // Leave current poll if exists
+    if (currentPollId) {
+      this.socketService.leavePoll(currentPollId);
+    }
+
+    // Select new poll
     this.selectedPollId.set(id);
     this.newMessageText.set('');
+
+    // Clear messages and typing users for new poll
+    this.typingUsers.set([]);
+
+    // Join new poll
+    this.joinCurrentPoll();
+  }
+
+  private joinCurrentPoll(): void {
+    const pollId = this.selectedPollId();
+    if (!pollId) {
+      console.warn('No poll ID to join');
+      return;
+    }
+
+    if (!this.isConnected()) {
+      console.warn('Socket not connected, cannot join poll');
+      return;
+    }
+
+    console.log(`Attempting to join poll: ${pollId}`);
+    this.socketService.joinPoll(pollId);
+  }
+
+  voteOption(optionId: string): void {
+    const pollId = this.selectedPollId();
+    if (!pollId || !this.isConnected()) {
+      console.warn('Cannot vote: No poll selected or socket not connected');
+      return;
+    }
+
+    console.log(`Voting on poll ${pollId}, option ${optionId}`);
+    this.socketService.vote(pollId, optionId);
   }
 
   sendMessage(): void {
     const text = this.newMessageText().trim();
     if (!text) return;
 
-    const newMsg: ChatMessage = {
-      id: crypto.randomUUID(),
-      pollId: this.selectedPollId(),
-      author: 'you',
-      name: 'You',
-      text,
-      timestamp: new Date(),
+    const pollId = this.selectedPollId();
+    if (!pollId || !this.isConnected()) {
+      console.warn('Cannot send message: No poll selected or socket not connected');
+      return;
+    }
+
+    this.socketService.sendMessage(pollId, text);
+    this.socketService.stopTyping(pollId);
+    
+    this.newMessageText.set('');
+  }
+
+  onMessageInput(): void {
+    const pollId = this.selectedPollId();
+    if (!pollId || !this.isConnected()) return;
+
+    this.socketService.startTyping(pollId);
+  }
+
+  refreshPolls(): void {
+    this.loadActivePolls();
+  }
+
+  navigateToDashboard(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
+  private updatePoll(updatedPoll: any): void {
+    console.log('Updating poll in UI:', updatedPoll);
+    this.polls.update(polls =>
+      polls.map(poll =>
+        poll.id === updatedPoll.id ? { 
+          ...poll, 
+          options: updatedPoll.options,
+          totalVotes: updatedPoll.totalVotes 
+        } : poll
+      )
+    );
+  }
+
+  private addMessage(socketMessage: SocketChatMessage): void {
+    const currentUser = this.currentUser();
+    const message: ChatMessage = {
+      ...socketMessage,
+      timestamp: new Date(socketMessage.timestamp),
+      isCurrentUser: socketMessage.userId === currentUser?.id
     };
 
-    this.messages.update((msgs) => [...msgs, newMsg]);
-    this.newMessageText.set('');
+    this.messages.update(msgs => [...msgs, message]);
 
-    // TODO: emit via WebSocket / Socket.IO in real implementation
+    // Auto-scroll to bottom (optional - add this to your template)
+    setTimeout(() => {
+      const chatContainer = document.querySelector('.chat-messages-container');
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    }, 100);
+  }
+
+  private addTypingUser(user: TypingUser): void {
+    const currentUser = this.currentUser();
+    
+    if (user.userId === currentUser?.id) return;
+
+    this.typingUsers.update(users => {
+      const exists = users.find(u => u.userId === user.userId);
+      if (exists) return users;
+      return [...users, user];
+    });
+
+    // Auto-remove after 3 seconds
+    const timeout = setTimeout(() => {
+      this.removeTypingUser(user.userId);
+    }, 3000);
+
+    this.typingTimeouts.set(user.userId, timeout);
+  }
+
+  private removeTypingUser(userId: string): void {
+    this.typingUsers.update(users =>
+      users.filter(u => u.userId !== userId)
+    );
+
+    const timeout = this.typingTimeouts.get(userId);
+    if (timeout) {
+      clearTimeout(timeout);
+      this.typingTimeouts.delete(userId);
+    }
   }
 
   formatTime(date: Date): string {
@@ -149,5 +343,14 @@ getTotalVotes(): number {
       hour: '2-digit',
       minute: '2-digit',
     });
+  }
+
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   }
 }

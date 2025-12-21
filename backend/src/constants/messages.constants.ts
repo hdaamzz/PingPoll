@@ -35,3 +35,12 @@ export const POLL_MESSAGES = {
   POLL_NOT_ACTIVE: 'This poll is not active',
   POLL_EXPIRED: 'This poll has expired',
 } as const;
+
+export const MESSAGE_MESSAGES = {
+  MESSAGE_EMPTY: 'Message cannot be empty',
+  MESSAGE_TOO_LONG: 'Message is too long (max 1000 characters)',
+  MESSAGE_NOT_FOUND: 'Message not found',
+  MESSAGE_UNAUTHORIZED: 'You are not authorized to delete this message',
+  MESSAGE_SENT: 'Message sent successfully',
+  MESSAGE_DELETED: 'Message deleted successfully',
+} as const;

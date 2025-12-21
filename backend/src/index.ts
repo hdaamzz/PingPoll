@@ -4,13 +4,16 @@ import { Server } from 'socket.io';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { container } from 'tsyringe';
+import './container'
 import mongoose from 'mongoose';
 import { ENV_CONFIG } from './config/env.config.js';
 import { createServer } from 'http';
 import connectDB from './config/database.connect.js';
 import Routes from './routes/routes.js';
-import { container } from './container.js';
-import { SocketService } from './services/socket.service.js';
+import { SocketService } from './services/socket.service';
+const socketService = container.resolve<SocketService>("SocketService");
+
 
 
 const app = express();
@@ -49,7 +52,7 @@ app.use('/api',Routes);
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
-const socketService = container.resolve(SocketService);
+
 socketService.initialize(io);
 
 httpServer.listen(PORT, () => {

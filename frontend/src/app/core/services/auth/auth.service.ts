@@ -41,6 +41,9 @@ export class AuthService {
       }
     });
   }
+  getToken(){
+    return localStorage.getItem('token');
+  }
 
   checkAuthStatus(): void {
     this.loading.set(true);
