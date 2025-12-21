@@ -9,7 +9,7 @@ const authController = container.resolve(AuthController);
 const authMiddleware = container.resolve(AuthMiddleware);
 
 router.post('/google', authController.googleAuth);
-
 router.get('/me', authMiddleware.authenticate, authController.getCurrentUser);
 router.post('/logout', authMiddleware.authenticate, authController.logout);
+
 export default router;

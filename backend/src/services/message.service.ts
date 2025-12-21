@@ -10,7 +10,6 @@ export class MessageService implements IMessageService {
   ) {}
 
   async createMessage(data: CreateMessageDto): Promise<MessageDto> {
-    // Validate text
     if (!data.text.trim()) {
       throw new Error(MESSAGE_MESSAGES.MESSAGE_EMPTY);
     }

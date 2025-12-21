@@ -1,15 +1,7 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { IMessage } from '../interfaces/message.interface';
 
-export interface IMessage extends Document {
-  _id: mongoose.Types.ObjectId;
-  pollId: mongoose.Types.ObjectId;
-  userId: mongoose.Types.ObjectId;
-  userName: string;
-  userPicture: string;
-  text: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+
 
 const MessageSchema = new Schema<IMessage>({
   pollId: {
@@ -42,8 +34,7 @@ const MessageSchema = new Schema<IMessage>({
   timestamps: true
 });
 
-// Index for efficient querying
-// MessageSchema.index({ pollId: 1, createdAt: -1 });
-// MessageSchema.index({ userId: 1, createdAt: -1 });
+MessageSchema.index({ pollId: 1, createdAt: -1 });
+MessageSchema.index({ userId: 1, createdAt: -1 });
 
 export const Message = mongoose.model<IMessage>('Message', MessageSchema);

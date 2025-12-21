@@ -1,21 +1,10 @@
 import { injectable, inject } from 'tsyringe';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import { IPollRepository } from '../repositories/interfaces/poll-repository.interface';
 import { IMessageService } from './interfaces/message-service.interface';
 import { PollDto } from '../shared/dtos/poll/poll.dto';
 import { JwtUtil } from '../shared/utils/jwt.util';
-
-interface UserSocket extends Socket {
-  userId?: string;
-  userName?: string;
-  userPicture?: string;
-}
-
-interface TypingUser {
-  userId: string;
-  userName: string;
-  userPicture: string;
-}
+import { TypingUser, UserSocket } from './interfaces/socket.interface';
 
 @injectable()
 export class SocketService {
@@ -31,7 +20,6 @@ export class SocketService {
   initialize(io: Server): void {
     this.io = io;
 
-    // Authentication middleware
     this.io.use(async (socket: UserSocket, next) => {
       try {
         const token = socket.handshake.auth.token;
@@ -52,7 +40,6 @@ export class SocketService {
         socket.userName = socket.handshake.auth.userName || 'Anonymous';
         socket.userPicture = socket.handshake.auth.userPicture || '';
 
-        console.log(`✅ Socket authenticated: ${socket.userId} (${socket.userName})`);
         next();
       } catch (error: any) {
         console.error('Socket auth error:', error.message);
@@ -61,7 +48,6 @@ export class SocketService {
     });
 
     this.io.on('connection', (socket: UserSocket) => {
-      console.log(`User connected: ${socket.userId} (${socket.userName})`);
 
       this.handlePollJoin(socket);
       this.handlePollLeave(socket);
@@ -83,24 +69,19 @@ export class SocketService {
           return;
         }
 
-        // Join the poll room
         socket.join(`poll:${pollId}`);
 
-        // Track user in room
         if (!this.pollRooms.has(pollId)) {
           this.pollRooms.set(pollId, new Set());
         }
         this.pollRooms.get(pollId)!.add(socket.userId!);
 
-        // Send current poll data
         const pollDto = PollDto.fromModel(poll);
         socket.emit('poll:data', pollDto.toJSON());
 
-        // Load and send chat history
         const messages = await this.messageService.getPollMessages(pollId, 100);
         socket.emit('chat:history', messages);
 
-        // Notify others that user joined
         socket.to(`poll:${pollId}`).emit('user:joined', {
           userId: socket.userId,
           userName: socket.userName,
@@ -108,12 +89,10 @@ export class SocketService {
           activeUsers: this.pollRooms.get(pollId)!.size
         });
 
-        // Send active users count
         socket.emit('poll:activeUsers', {
           count: this.pollRooms.get(pollId)!.size
         });
 
-        console.log(`User ${socket.userName} joined poll ${pollId}`);
       } catch (error) {
         console.error('Error joining poll:', error);
         socket.emit('error', { message: 'Failed to join poll' });
@@ -132,7 +111,6 @@ export class SocketService {
       try {
         const { pollId, optionId } = data;
         
-        // Update vote in database
         const updatedPoll = await this.pollRepository.updateVote(
           pollId,
           optionId,
@@ -144,18 +122,14 @@ export class SocketService {
           return;
         }
 
-        // Broadcast updated poll data to all users in the room
         const pollDto = PollDto.fromModel(updatedPoll);
         this.io.to(`poll:${pollId}`).emit('poll:updated', pollDto.toJSON());
 
-        // Send vote confirmation to voter
         socket.emit('vote:success', {
           pollId,
           optionId,
           message: 'Vote recorded successfully'
         });
-
-        console.log(`User ${socket.userName} voted on poll ${pollId}, option ${optionId}`);
       } catch (error) {
         console.error('Error recording vote:', error);
         socket.emit('error', { message: 'Failed to record vote' });
@@ -171,8 +145,6 @@ export class SocketService {
         if (!text.trim()) {
           return;
         }
-
-        // Save message to database
         const savedMessage = await this.messageService.createMessage({
           pollId,
           userId: socket.userId!,
@@ -180,14 +152,10 @@ export class SocketService {
           userPicture: socket.userPicture!,
           text: text.trim()
         });
-
-        // Broadcast message to all users in the poll room
         this.io.to(`poll:${pollId}`).emit('chat:message', savedMessage);
 
-        // Clear typing indicator for this user
         this.clearTyping(pollId, socket.userId!);
 
-        console.log(`Chat message in poll ${pollId} from ${socket.userName}: ${text}`);
       } catch (error: any) {
         console.error('Error sending chat message:', error);
         socket.emit('error', { message: error.message || 'Failed to send message' });
@@ -209,7 +177,6 @@ export class SocketService {
 
       this.typingUsers.get(pollId)!.set(socket.userId!, typingUser);
 
-      // Broadcast typing indicator to others
       socket.to(`poll:${pollId}`).emit('chat:userTyping', typingUser);
     });
   }
@@ -224,16 +191,13 @@ export class SocketService {
     if (this.typingUsers.has(pollId)) {
       this.typingUsers.get(pollId)!.delete(userId);
 
-      // Broadcast stop typing to others
       this.io.to(`poll:${pollId}`).emit('chat:userStoppedTyping', { userId });
     }
   }
 
   private handleDisconnect(socket: UserSocket): void {
     socket.on('disconnect', () => {
-      console.log(`User disconnected: ${socket.userId} (${socket.userName})`);
 
-      // Remove user from all poll rooms
       this.pollRooms.forEach((users, pollId) => {
         if (users.has(socket.userId!)) {
           this.leavePoll(socket, pollId);
@@ -248,24 +212,20 @@ export class SocketService {
     if (this.pollRooms.has(pollId)) {
       this.pollRooms.get(pollId)!.delete(socket.userId!);
 
-      // Notify others that user left
       socket.to(`poll:${pollId}`).emit('user:left', {
         userId: socket.userId,
         userName: socket.userName,
         activeUsers: this.pollRooms.get(pollId)!.size
       });
 
-      // Clear typing if user was typing
       this.clearTyping(pollId, socket.userId!);
 
-      // Clean up empty rooms
       if (this.pollRooms.get(pollId)!.size === 0) {
         this.pollRooms.delete(pollId);
         this.typingUsers.delete(pollId);
       }
     }
 
-    console.log(`User ${socket.userName} left poll ${pollId}`);
   }
 
   getIO(): Server {

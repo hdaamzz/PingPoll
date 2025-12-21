@@ -1,11 +1,6 @@
 import { IPoll } from "../../../models/poll.model";
+import { PollOptionDto } from "./interfaces/poll.dto.interface";
 
-export interface PollOptionDto {
-  id: string;
-  text: string;
-  votes: number;
-  percentage: number;
-}
 
 export class PollDto {
   id: string;

@@ -15,15 +15,11 @@ import { MessageService } from './services/message.service';
 container.register('IUserRepository', { useClass: UserRepository});
 container.register('IPollRepository', { useClass: PollRepository });
 container.register('IMessageRepository', { useClass: MessageRepository });
-
-
 // Register services
 container.register('IAuthService', { useClass: AuthService});
 container.register('IPollService', { useClass: PollService });
 container.register('SocketService', { useClass: SocketService });
 container.register('IMessageService', { useClass: MessageService });
-
-
 // Register controllers
 container.register('IAuthController', { useClass: AuthController });
 container.register('IPollController', { useClass: PollController });

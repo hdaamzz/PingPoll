@@ -12,14 +12,14 @@ import { createServer } from 'http';
 import connectDB from './config/database.connect.js';
 import Routes from './routes/routes.js';
 import { SocketService } from './services/socket.service';
-const socketService = container.resolve<SocketService>("SocketService");
+
 
 
 
 const app = express();
 const httpServer = createServer(app);
 const PORT = ENV_CONFIG.PORT;
-
+const socketService = container.resolve<SocketService>("SocketService");
 const io = new Server(httpServer, {
   cors: {
     origin: ENV_CONFIG.FRONTEND_URL,

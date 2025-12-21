@@ -1,7 +1,4 @@
-export interface CreatePollOptionDto {
-  id: string;
-  text: string;
-}
+import { CreatePollOptionDto } from "./interfaces/poll.dto.interface";
 
 export class CreatePollDto {
   title: string;
