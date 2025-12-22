@@ -1,17 +1,21 @@
 FROM node:20-alpine
 
-# Create app directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
+# Copy package files
 COPY package*.json ./
-RUN npm ci --only=production
 
-# Copy app source
+# Install ALL dependencies (keep dev dependencies for building)
+RUN npm install
+
+# Copy source code
 COPY . .
 
 # Build TypeScript
 RUN npm run build
+
+# Remove devDependencies after build
+RUN npm prune --production
 
 # Expose port
 EXPOSE 3000
