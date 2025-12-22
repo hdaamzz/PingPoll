@@ -24,17 +24,22 @@ interface PollOptionForm {
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  private authService = inject(AuthService);
-  private pollService = inject(PollService);
-  private router = inject(Router);
+  _authService = inject(AuthService);
+  _pollService = inject(PollService);
+  _router = inject(Router);
 
-  currentUser = this.authService.currentUser;
+  currentUser = this._authService.currentUser;
   showUserMenu = signal(false);
   selectedTab = signal<'overview' | 'polls' | 'create'>('overview');
+  deleteDialogOpen = signal(false);
+  pollToDelete = signal<string | null>(null);
+  pollTitle = signal('');
+
 
   polls = signal<Poll[]>([]);
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  isSidebarOpen = signal(false);
 
   stats = signal<DashboardStats>({
     totalPolls: 0,
@@ -53,8 +58,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   createErrorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/']);
+    if (!this._authService.isAuthenticated()) {
+      this._router.navigate(['/']);
       return;
     }
     this.loadUserPolls();
@@ -64,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this.pollService.getUserPolls().subscribe({
+    this._pollService.getUserPolls().subscribe({
       next: (polls) => {
         this.polls.set(polls);
         this.updateStats(polls);
@@ -98,12 +103,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (tab === 'create') {
       this.resetCreateForm();
     }
+    if (window.innerWidth < 1024) {
+    this.closeSidebar();
+  }
   }
 
   handleLogout(): void {
-    this.authService.logout().subscribe({
+    this._authService.logout().subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        this._router.navigate(['/']);
       },
       error: (error) => {
         console.error('Logout failed:', error);
@@ -112,35 +120,44 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   navigateToHome(): void {
-    this.router.navigate(['/']);
+    this._router.navigate(['/']);
   }
 
   createNewPoll(): void {
     this.selectTab('create');
   }
-
-  viewPoll(pollId: string): void {
-    this.router.navigate(['/polls', pollId]);
+  openDeleteDialog(pollId: string): void {
+    const poll = this.polls().find(p => p.id === pollId);
+    if (poll) {
+      this.pollToDelete.set(pollId);
+      this.pollTitle.set(poll.title);
+      this.deleteDialogOpen.set(true);
+    }
   }
 
-  deletePoll(pollId: string): void {
-    if (!confirm('Are you sure you want to delete this poll?')) {
-      return;
-    }
+  closeDeleteDialog(): void {
+    this.deleteDialogOpen.set(false);
+    this.pollToDelete.set(null);
+    this.pollTitle.set('');
+  }
 
-    this.pollService.deletePoll(pollId).subscribe({
+  confirmDeletePoll(): void {
+    const pollId = this.pollToDelete();
+    if (!pollId) return;
+
+    this._pollService.deletePoll(pollId).subscribe({
       next: () => {
         this.polls.update(polls => polls.filter(p => p.id !== pollId));
         this.updateStats(this.polls());
+        this.closeDeleteDialog();
       },
       error: (error) => {
         console.error('Failed to delete poll:', error);
         alert('Failed to delete poll: ' + error.message);
+        this.closeDeleteDialog();
       },
     });
   }
-
-  // Create Poll Methods
   addOption(): void {
     const current = this.options();
     if (current.length >= 6) return;
@@ -205,7 +222,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       pollData.expiresAt = new Date(this.expiresAt());
     }
 
-    this.pollService.createPoll(pollData).subscribe({
+    this._pollService.createPoll(pollData).subscribe({
       next: (poll) => {
         console.log('Poll created:', poll);
         this.resetCreateForm();
@@ -222,12 +239,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getStatusColor(status: string): string {
-    const colors = {
-      active: 'bg-green-500/10 text-green-500 border-green-500/30',
-      closed: 'bg-gray-500/10 text-gray-500 border-gray-500/30',
-      draft: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30',
-    };
-    return colors[status as keyof typeof colors] || colors.active;
+    switch (status.toLowerCase()) {
+      case 'active':
+        return 'bg-green-500/20 text-green-400 border-green-500/40';
+      case 'closed':
+        return 'bg-red-500/20 text-red-400 border-red-500/40';
+      case 'draft':
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40';
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/40';
+    }
   }
 
   formatTimeAgo(date: Date): string {
@@ -244,4 +265,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {}
+  toggleSidebar() {
+    this.isSidebarOpen.set(!this.isSidebarOpen());
+  }
+  closeSidebar() {
+    this.isSidebarOpen.set(false);
+  }
 }

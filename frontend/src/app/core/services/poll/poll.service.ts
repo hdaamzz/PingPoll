@@ -3,9 +3,6 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { map, Observable } from 'rxjs';
 
-
-
-
 export interface PollOption {
   id: string;
   text: string;
@@ -36,7 +33,7 @@ export interface CreatePollRequest {
 export interface UpdatePollRequest {
   title?: string;
   question?: string;
-  status?: 'active' | 'closed' | 'draft';
+  status?: 'active' | 'closed';
   expiresAt?: Date;
 }
 

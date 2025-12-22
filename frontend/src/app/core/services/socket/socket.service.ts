@@ -38,7 +38,6 @@ export class SocketService {
   private chatHistory$ = new Subject<any[]>();
 
   
-  // Observables for real-time events
   private pollUpdated$ = new Subject<PollUpdate>();
   private chatMessage$ = new Subject<ChatMessage>();
   private userTyping$ = new Subject<TypingUser>();
@@ -60,7 +59,6 @@ export class SocketService {
 
     if (!token || !user) {
       console.warn('Cannot connect socket: No authentication token or user');
-      // Retry after authentication
       setTimeout(() => {
         const retryUser = this.authService.currentUser();
         const retryToken = this.authService.getToken();
@@ -90,12 +88,12 @@ export class SocketService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-      console.log('✅ Socket connected');
+      console.log('Socket connected');
       this.isConnected.set(true);
     });
 
     this.socket.on('disconnect', () => {
-      console.log('❌ Socket disconnected');
+      console.log('Socket disconnected');
       this.isConnected.set(false);
     });
 
@@ -111,12 +109,10 @@ export class SocketService {
       this.chatHistory$.next(messages);
     });
 
-    // Poll events
     this.socket.on('poll:updated', (data: PollUpdate) => {
       this.pollUpdated$.next(data);
     });
 
-    // Chat events
     this.socket.on('chat:message', (message: ChatMessage) => {
       this.chatMessage$.next(message);
     });
@@ -129,7 +125,6 @@ export class SocketService {
       this.userStoppedTyping$.next(data);
     });
 
-    // User presence events
     this.socket.on('user:joined', (data: any) => {
       this.userJoined$.next(data);
     });
@@ -151,42 +146,34 @@ export class SocketService {
     }
   }
 
-  // Join a poll room
   joinPoll(pollId: string): void {
     if (this.socket) {
       this.socket.emit('poll:join', pollId);
     }
   }
 
-  // Leave a poll room
   leavePoll(pollId: string): void {
     if (this.socket) {
       this.socket.emit('poll:leave', pollId);
     }
   }
-  onChatHistory(): Observable<any[]> {
-    return this.chatHistory$.asObservable();
-  }
-  // Vote on a poll
+
   vote(pollId: string, optionId: string): void {
     if (this.socket) {
       this.socket.emit('vote', { pollId, optionId });
     }
   }
 
-  // Send chat message
   sendMessage(pollId: string, text: string): void {
     if (this.socket) {
       this.socket.emit('chat:message', { pollId, text });
     }
   }
 
-  // Typing indicators
   startTyping(pollId: string): void {
     if (this.socket) {
       this.socket.emit('chat:typing', pollId);
 
-      // Auto-stop typing after 3 seconds of inactivity
       clearTimeout(this.typingTimeout);
       this.typingTimeout = setTimeout(() => {
         this.stopTyping(pollId);
@@ -201,7 +188,6 @@ export class SocketService {
     }
   }
 
-  // Observables
   onPollUpdated(): Observable<PollUpdate> {
     return this.pollUpdated$.asObservable();
   }
@@ -228,5 +214,8 @@ export class SocketService {
 
   onActiveUsers(): Observable<{ count: number }> {
     return this.activeUsers$.asObservable();
+  }
+  onChatHistory(): Observable<any[]> {
+    return this.chatHistory$.asObservable();
   }
 }

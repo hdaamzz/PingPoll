@@ -94,7 +94,7 @@ export class AuthService {
             this.loading.set(false);
 
             setTimeout(() => {
-              this.router.navigate(['/dashboard']);
+              this.router.navigate(['/']);
             }, 500);
           }
         } catch (error: any) {

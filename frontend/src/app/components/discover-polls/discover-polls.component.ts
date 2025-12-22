@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -41,6 +41,7 @@ interface ChatMessage {
   templateUrl: './discover-polls.component.html',
 })
 export class DiscoverPollsComponent implements OnInit, OnDestroy {
+
   private socketService = inject(SocketService);
   private authService = inject(AuthService);
   private pollService = inject(PollService);
@@ -80,7 +81,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    // Check authentication
     if (!this.authService.isUserAuthenticated()) {
       console.warn('User not authenticated, redirecting...');
       this.router.navigate(['/']);
@@ -88,7 +88,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
     }
     this.subscriptions.push(
       this.socketService.onChatHistory().subscribe((messages) => {
-        console.log('Received chat history:', messages);
         this.messages.set(messages.map(msg => ({
           ...msg,
           timestamp: new Date(msg.timestamp),
@@ -97,8 +96,14 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Load active polls first
     this.loadActivePolls();
+  }
+  @ViewChild('messagesContainer') messagesContainer!: ElementRef;
+
+  ngAfterViewChecked() {
+    if (this.messagesContainer) {
+      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+    }
   }
 
   private loadActivePolls(): void {
@@ -107,7 +112,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
 
     this.pollService.getActivePolls().subscribe({
       next: (polls) => {
-        console.log('Loaded active polls:', polls);
         
         if (polls.length === 0) {
           this.errorMessage.set('No active polls available. Create one to get started!');
@@ -119,7 +123,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
         this.selectedPollId.set(polls[0].id);
         this.isLoading.set(false);
 
-        // Now connect to socket and join the first poll
         this.initializeSocket();
       },
       error: (error) => {
@@ -131,22 +134,16 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
   }
 
   private initializeSocket(): void {
-    console.log('Initializing socket connection...');
     
-    // Connect to socket
     this.socketService.connect();
 
-    // Wait for connection before subscribing
     setTimeout(() => {
-      // Subscribe to socket events
       this.subscriptions.push(
         this.socketService.onPollUpdated().subscribe((poll) => {
-          console.log('Poll updated:', poll);
           this.updatePoll(poll);
         }),
 
         this.socketService.onChatMessage().subscribe((message) => {
-          console.log('Chat message received:', message);
           this.addMessage(message);
         }),
 
@@ -163,7 +160,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
         })
       );
 
-      // Join the first poll after a short delay
       setTimeout(() => {
         if (this.isConnected()) {
           this.joinCurrentPoll();
@@ -176,16 +172,13 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Leave current poll
     const pollId = this.selectedPollId();
     if (pollId) {
       this.socketService.leavePoll(pollId);
     }
 
-    // Clean up subscriptions
     this.subscriptions.forEach(sub => sub.unsubscribe());
 
-    // Disconnect socket
     this.socketService.disconnect();
   }
 
@@ -201,19 +194,15 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
     const currentPollId = this.selectedPollId();
     if (currentPollId === id) return;
 
-    // Leave current poll if exists
     if (currentPollId) {
       this.socketService.leavePoll(currentPollId);
     }
 
-    // Select new poll
     this.selectedPollId.set(id);
     this.newMessageText.set('');
 
-    // Clear messages and typing users for new poll
     this.typingUsers.set([]);
 
-    // Join new poll
     this.joinCurrentPoll();
   }
 
@@ -229,7 +218,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log(`Attempting to join poll: ${pollId}`);
     this.socketService.joinPoll(pollId);
   }
 
@@ -240,7 +228,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log(`Voting on poll ${pollId}, option ${optionId}`);
     this.socketService.vote(pollId, optionId);
   }
 
@@ -276,7 +263,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
   }
 
   private updatePoll(updatedPoll: any): void {
-    console.log('Updating poll in UI:', updatedPoll);
     this.polls.update(polls =>
       polls.map(poll =>
         poll.id === updatedPoll.id ? { 
@@ -298,7 +284,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
 
     this.messages.update(msgs => [...msgs, message]);
 
-    // Auto-scroll to bottom (optional - add this to your template)
     setTimeout(() => {
       const chatContainer = document.querySelector('.chat-messages-container');
       if (chatContainer) {
@@ -318,7 +303,6 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
       return [...users, user];
     });
 
-    // Auto-remove after 3 seconds
     const timeout = setTimeout(() => {
       this.removeTypingUser(user.userId);
     }, 3000);
@@ -343,6 +327,9 @@ export class DiscoverPollsComponent implements OnInit, OnDestroy {
       hour: '2-digit',
       minute: '2-digit',
     });
+  }
+  navigateToHome() {
+    this.router.navigate(['/'])
   }
 
   getInitials(name: string): string {

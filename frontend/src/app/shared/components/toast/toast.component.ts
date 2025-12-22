@@ -14,13 +14,12 @@ export class ToastComponent {
   protected toasts = this.toastService.toasts$;
 
   removeToast(id: string): void {
-    // Add animation class before removing
     const element = document.getElementById(`toast-${id}`);
     if (element) {
       element.classList.add('animate-slide-out-right');
       setTimeout(() => {
         this.toastService.remove(id);
-      }, 300); // Match animation duration
+      }, 300); 
     } else {
       this.toastService.remove(id);
     }

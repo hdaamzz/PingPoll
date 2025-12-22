@@ -1,4 +1,4 @@
-import { IPoll } from '../../models/poll.model';
+import { IPoll } from '../../interfaces/poll.interface';
 import { IBaseRepository } from '../../shared/interfaces/base-repository.interface';
 
 export interface IPollRepository extends IBaseRepository<IPoll> {

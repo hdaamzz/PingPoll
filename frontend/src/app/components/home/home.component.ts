@@ -12,14 +12,14 @@ import { AuthService } from '../../core/services/auth/auth.service';
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  _authService = inject(AuthService);
+  _router = inject(Router);
 
-  loading = this.authService.loading;
-  currentUser = this.authService.currentUser;
-  isAuthenticated = this.authService.isAuthenticated;
+  loading = this._authService.loading;
+  currentUser = this._authService.currentUser;
+  isAuthenticated = this._authService.isAuthenticated;
 
-  private loginSubscription?: Subscription;
+  _loginSubscription?: Subscription;
 
   features = signal([
     {
@@ -44,7 +44,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   showUserMenu = signal(false);
 
   ngOnInit(): void {
-    // Check if user is already authenticated
     if (this.isAuthenticated()) {
       console.log('User is authenticated:', this.currentUser());
     }
@@ -55,24 +54,24 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loginSubscription = this.authService.googleSignIn().subscribe({
+    this._loginSubscription = this._authService.googleSignIn().subscribe({
       next: () => {
-        console.log('✅ Login successful');
+        console.log('Login successful');
       },
       error: (error) => {
-        console.error('❌ Login failed:', error);
+        console.error('Login failed:', error);
       },
     });
   }
 
   handleLogout(): void {
-    this.authService.logout().subscribe({
+    this._authService.logout().subscribe({
       next: () => {
-        console.log('✅ Logged out successfully');
+        console.log('Logged out successfully');
         this.showUserMenu.set(false);
       },
       error: (error) => {
-        console.error('❌ Logout failed:', error);
+        console.error('Logout failed:', error);
       },
     });
   }
@@ -82,12 +81,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   navigateToDashboard(): void {
-    this.router.navigate(['/dashboard']);
+    this._router.navigate(['/dashboard']);
     this.showUserMenu.set(false);
   }
 
   navigateToDiscover(): void {
-    this.router.navigate(['/discover']);
+    this._router.navigate(['/discover']);
     this.showUserMenu.set(false);
   }
 
@@ -102,6 +101,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.loginSubscription?.unsubscribe();
+    this._loginSubscription?.unsubscribe();
   }
 }
