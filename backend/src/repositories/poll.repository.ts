@@ -2,7 +2,7 @@ import { injectable } from 'tsyringe';
 import { BaseRepository } from './base/base.repository';
 import { IPollRepository } from './interfaces/poll-repository.interface';
 import { IPoll } from '../interfaces/poll.interface';
-import { Poll } from '../models/poll.model';
+import Poll from '../models/poll.model';
 
 @injectable()
 export class PollRepository extends BaseRepository<IPoll> implements IPollRepository {
