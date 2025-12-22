@@ -1,7 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IPoll, IPollOption } from '../interfaces/poll.interface';
 
-
 const PollOptionSchema = new Schema<IPollOption>({
   id: { type: String, required: true },
   text: { type: String, required: true },
@@ -55,6 +54,5 @@ const PollSchema = new Schema<IPoll>({
 }, {
   timestamps: true
 });
-
 
 export const Poll = mongoose.model<IPoll>('Poll', PollSchema);

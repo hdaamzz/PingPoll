@@ -1,7 +1,8 @@
 import { injectable } from 'tsyringe';
 import { BaseRepository } from './base/base.repository';
 import { IMessageRepository } from './interfaces/message-repository.interface';
-import { IMessage, Message } from '../models/message.model';
+import { Message } from '../models/message.model';
+import { IMessage } from '../interfaces/message.interface';
 
 @injectable()
 export class MessageRepository extends BaseRepository<IMessage> implements IMessageRepository {

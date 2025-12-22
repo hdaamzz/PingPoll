@@ -1,4 +1,4 @@
-import { IPoll } from "../../../models/poll.model";
+import { IPoll } from "../../../interfaces/poll.interface";
 import { PollOptionDto } from "./interfaces/poll.dto.interface";
 
 

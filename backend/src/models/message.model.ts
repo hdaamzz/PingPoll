@@ -1,8 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IMessage } from '../interfaces/message.interface';
 
-
-
 const MessageSchema = new Schema<IMessage>({
   pollId: {
     type: Schema.Types.ObjectId,
@@ -33,8 +31,5 @@ const MessageSchema = new Schema<IMessage>({
 }, {
   timestamps: true
 });
-
-MessageSchema.index({ pollId: 1, createdAt: -1 });
-MessageSchema.index({ userId: 1, createdAt: -1 });
 
 export const Message = mongoose.model<IMessage>('Message', MessageSchema);
