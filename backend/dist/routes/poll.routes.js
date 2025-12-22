@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const tsyringe_1 = require("tsyringe");
+const poll_controller_1 = require("../controllers/poll.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const router = (0, express_1.Router)();
+const pollController = tsyringe_1.container.resolve(poll_controller_1.PollController);
+const authMiddleware = tsyringe_1.container.resolve(auth_middleware_1.AuthMiddleware);
+router.post('/', authMiddleware.authenticate, pollController.createPoll);
+router.get('/my-polls', authMiddleware.authenticate, pollController.getUserPolls);
+router.get('/active', pollController.getActivePolls);
+router.get('/:pollId', pollController.getPollById);
+router.put('/:pollId', authMiddleware.authenticate, pollController.updatePoll);
+router.delete('/:pollId', authMiddleware.authenticate, pollController.deletePoll);
+router.post('/:pollId/vote/:optionId', authMiddleware.authenticate, pollController.voteOnPoll);
+exports.default = router;

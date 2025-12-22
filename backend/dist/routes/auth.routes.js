@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const tsyringe_1 = require("tsyringe");
+const auth_controller_js_1 = require("../controllers/auth.controller.js");
+const auth_middleware_js_1 = require("../middlewares/auth.middleware.js");
+const router = (0, express_1.Router)();
+const authController = tsyringe_1.container.resolve(auth_controller_js_1.AuthController);
+const authMiddleware = tsyringe_1.container.resolve(auth_middleware_js_1.AuthMiddleware);
+router.post('/google', authController.googleAuth);
+router.get('/me', authMiddleware.authenticate, authController.getCurrentUser);
+router.post('/logout', authMiddleware.authenticate, authController.logout);
+exports.default = router;
