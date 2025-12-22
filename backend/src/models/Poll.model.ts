@@ -41,6 +41,7 @@ const PollSchema = new Schema<IPoll>({
     minlength: 5,
     maxlength: 500
   },
+  
   options: {
     type: [PollOptionSchema],
     required: true,

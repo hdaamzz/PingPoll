@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { container } from 'tsyringe';
-import './container'
+import './container.js';
 import mongoose from 'mongoose';
 import { ENV_CONFIG } from './config/env.config.js';
 import { createServer } from 'http';
