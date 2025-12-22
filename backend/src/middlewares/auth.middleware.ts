@@ -30,6 +30,8 @@ export class AuthMiddleware implements IAuthMiddleware {
       }
 
       const decoded = JwtUtil.verifyToken(token);
+      console.log(decoded);
+      
       const user = await this.authService.getUserById(decoded.userId);
 
       if (!user) {
