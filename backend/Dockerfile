@@ -13,7 +13,6 @@ COPY . .
 # Build TypeScript
 RUN npm run build
 
-
 # Expose port
 EXPOSE 3000
 
