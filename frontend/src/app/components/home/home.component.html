@@ -1,169 +1,184 @@
-<div class="min-h-screen bg-linear-to-br from-[#e3f2fd] via-[#bbdefb] to-[#90caf9] relative overflow-hidden">
+<div class="min-h-screen bg-linear-to-br from-[#e3f2fd] via-[#f5f9ff] to-[#e1f5fe] relative overflow-hidden">
   
-  <!-- Background Decorative Elements -->
+  <!-- Enhanced Background Elements -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <div class="absolute top-20 left-10 w-72 h-72 bg-[#e1f5fe]/20 rounded-full blur-3xl animate-pulse"></div>
-    <div class="absolute bottom-20 right-10 w-96 h-96 bg-[#e1f5fe]/25 rounded-full blur-3xl animate-pulse delay-1000"></div>
-    <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-linear-to-r from-[#e1f5fe]/30 to-[#ffffff]/10 rounded-full blur-2xl"></div>
-    <div class="absolute top-1/3 right-1/4 w-48 h-48 bg-[#e1f5fe]/15 rounded-full blur-3xl"></div>
+    <div class="absolute top-0 left-0 w-150 h-150 bg-linear-to-br from-[#0288d1]/10 to-transparent rounded-full blur-3xl animate-float"></div>
+    <div class="absolute bottom-0 right-0 w-200 h-200 bg-linear-to-tl from-[#03a9f4]/15 to-transparent rounded-full blur-3xl animate-float-delayed"></div>
+    <div class="absolute top-1/2 left-1/4 w-100 h-100 bg-linear-to-r from-[#0277bd]/8 to-transparent rounded-full blur-3xl animate-pulse"></div>
   </div>
 
-  <!-- Grid Pattern Overlay -->
-  <div class="absolute inset-0 bg-[linear-gradient(rgba(225,245,254,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(225,245,254,0.08)_1px,transparent_1px)] bg-size-[64px_64px] pointer-events-none"></div>
+  <!-- Animated Grid -->
+  <div class="absolute inset-0 bg-[linear-gradient(rgba(2,136,209,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(2,136,209,0.03)_1px,transparent_1px)] bg-size-[80px_80px] pointer-events-none"></div>
 
   <!-- Navigation -->
-  <nav class="relative z-50 px-6 py-6 lg:px-12">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <!-- Logo -->
-      <div class="flex items-center space-x-3">
-        <div class="w-12 h-12 bg-linear-to-br from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-2xl flex items-center justify-center border border-[#0288d1]/30">
-          <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
-          </svg>
-        </div>
-        <h1 class="text-2xl lg:text-3xl font-bold bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] bg-clip-text text-transparent">
-          PingPoll
-        </h1>
-      </div>
-
-      <!-- Navigation Actions -->
-      @if (!isAuthenticated()) {
-        <button 
-          (click)="handleGoogleLogin()"
-          [disabled]="loading()"
-          class="hidden md:flex group px-8 py-4 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full text-white font-semibold border border-[#0288d1]/30 backdrop-blur-xl hover:from-[#0277bd] hover:to-[#0288d1] transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-          <span class="flex items-center justify-center space-x-2">
-            @if (loading()) {
-              <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span>Signing in...</span>
-            } @else {
-              <svg class="w-5 h-5" viewBox="0 0 24 24">
-                <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-              </svg>
-              <span>Get Started with Google</span>
-            }
-          </span>
-        </button>
-      } @else {
-        <div class="relative">
-          <button 
-            (click)="toggleUserMenu()"
-            class="flex items-center gap-3 px-5 py-3 bg-white/80 backdrop-blur-2xl border border-[#0288d1]/30 rounded-full hover:bg-white hover:border-[#0288d1]/50 transition-all duration-300">
-            <img 
-              [src]="currentUser()?.picture" 
-              [alt]="currentUser()?.name"
-              class="w-9 h-9 rounded-full border-2 border-[#0288d1]"
-            />
-            <div class="hidden md:block text-left">
-              <p class="text-sm font-semibold text-black">{{ currentUser()?.name }}</p>
-              <p class="text-xs text-[#0288d1]">{{ currentUser()?.email }}</p>
+  <nav class="relative z-50 px-6 py-5 lg:px-12">
+    <div class="max-w-7xl mx-auto">
+      <div class="bg-white/70 backdrop-blur-2xl border border-white/60 rounded-2xl px-6 py-4 shadow-lg shadow-[#0288d1]/5">
+        <div class="flex items-center justify-between">
+          <!-- Logo -->
+          <div class="flex items-center space-x-3">
+            <div class="relative group">
+              <div class="absolute inset-0 bg-linear-to-br from-[#0288d1] to-[#0277bd] rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+              <div class="relative w-12 h-12 bg-linear-to-br from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-2xl flex items-center justify-center shadow-lg">
+                <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+                </svg>
+              </div>
             </div>
-            <svg class="w-4 h-4 text-[#0288d1] transition-transform" [class.rotate-180]="showUserMenu()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
+            <div>
+              <h1 class="text-2xl lg:text-3xl font-bold bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] bg-clip-text text-transparent">
+                PingPoll
+              </h1>
+              <p class="text-xs text-gray-500 font-medium hidden sm:block">Real-time engagement</p>
+            </div>
+          </div>
+
+          <!-- Navigation Actions -->
+          @if (!isAuthenticated()) {
+            <button 
+            (click)="handleGoogleLogin()"
+            [disabled]="loading()"
+            class="group relative overflow-hidden px-8 py-3.5 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-xl text-white font-semibold shadow-lg shadow-[#0288d1]/30 hover:shadow-xl hover:shadow-[#0288d1]/40 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            <div class="absolute inset-0 bg-linear-to-r from-[#0277bd] to-[#0288d1] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <span class="relative flex items-center space-x-2">
+              @if (loading()) {
+                <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Signing in...</span>
+              } @else {
+                <!-- Multi-Color Google Icon (Official Brand Colors) -->
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                  <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                <span class="hidden sm:inline">Get Started</span>
+                <span class="sm:hidden">Sign In</span>
+              }
+            </span>
           </button>
 
-          <!-- Dropdown Menu -->
-          @if (showUserMenu()) {
-            <div class="absolute right-0 mt-3 w-72 bg-white/95 backdrop-blur-2xl border border-[#0288d1]/30 rounded-3xl py-3 shadow-lg z-100">
-              <div class="px-5 py-4 border-b border-[#0288d1]/20">
-                <p class="text-sm font-semibold text-black">{{ currentUser()?.name }}</p>
-                <p class="text-xs text-[#0288d1]/80 truncate">{{ currentUser()?.email }}</p>
-              </div>
-              
+          } @else {
+            <div class="relative">
               <button 
-                (click)="navigateToDashboard()"
-                class="w-full px-5 py-3 text-left text-sm text-black hover:bg-[#e3f5fe] transition-colors flex items-center gap-3 group">
-                <svg class="w-5 h-5 text-[#0288d1] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                (click)="toggleUserMenu()"
+                class="flex items-center gap-3 px-4 py-2.5 bg-white/90 backdrop-blur-xl border border-[#0288d1]/20 rounded-xl hover:bg-white hover:border-[#0288d1]/40 hover:shadow-lg transition-all duration-300">
+                <img 
+                  [src]="currentUser()?.picture" 
+                  [alt]="currentUser()?.name"
+                  class="w-9 h-9 rounded-lg border-2 border-[#0288d1] object-cover"
+                />
+                <div class="hidden md:block text-left">
+                  <p class="text-sm font-semibold text-gray-900">{{ currentUser()?.name }}</p>
+                  <p class="text-xs text-[#0288d1]">{{ currentUser()?.email }}</p>
+                </div>
+                <svg class="w-4 h-4 text-[#0288d1] transition-transform duration-300" [class.rotate-180]="showUserMenu()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
-                <span>Dashboard</span>
               </button>
 
-              <button 
-                (click)="handleLogout()"
-                class="w-full px-5 py-3 text-left text-sm text-red-500 hover:bg-red-50 transition-colors flex items-center gap-3 group mt-1">
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                </svg>
-                <span>Logout</span>
-              </button>
+              <!-- Dropdown Menu -->
+              @if (showUserMenu()) {
+                <div class="absolute right-0 mt-3 w-72 bg-white/95 backdrop-blur-2xl border border-[#0288d1]/20 rounded-2xl overflow-hidden shadow-2xl shadow-[#0288d1]/10 z-100 animate-slide-down">
+                  <div class="px-5 py-4 bg-linear-to-r from-[#e3f5fe] to-white border-b border-[#0288d1]/10">
+                    <p class="text-sm font-bold text-gray-900">{{ currentUser()?.name }}</p>
+                    <p class="text-xs text-gray-600 truncate mt-0.5">{{ currentUser()?.email }}</p>
+                  </div>
+                  
+                  <button 
+                    (click)="navigateToDashboard()"
+                    class="w-full px-5 py-3.5 text-left text-sm font-medium text-gray-700 hover:bg-[#e3f5fe] transition-colors flex items-center gap-3 group">
+                    <div class="w-9 h-9 bg-linear-to-br from-[#0288d1] to-[#03a9f4] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                      </svg>
+                    </div>
+                    <span>Dashboard</span>
+                  </button>
+
+                  <div class="border-t border-[#0288d1]/10 mt-1"></div>
+
+                  <button 
+                    (click)="handleLogout()"
+                    class="w-full px-5 py-3.5 text-left text-sm font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3 group">
+                    <div class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-red-100 transition-colors">
+                      <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                      </svg>
+                    </div>
+                    <span>Logout</span>
+                  </button>
+                </div>
+              }
             </div>
           }
         </div>
-      }
+      </div>
     </div>
   </nav>
 
   <!-- Hero Section -->
-  <section class="relative z-10 px-6 py-12 lg:py-20">
+  <section class="relative z-10 px-6 py-16 lg:py-24">
     <div class="max-w-7xl mx-auto">
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         
         <!-- Left Content -->
         <div class="text-center lg:text-left space-y-8">
           @if (isAuthenticated()) {
-            <!-- Welcome Back Message -->
-            <div class="inline-block px-6 py-3 bg-linear-to-r from-white/80 to-[#e3f5fe] backdrop-blur-2xl border border-[#0288d1]/40 rounded-full">
-              <span class="text-sm font-semibold text-black flex items-center justify-center space-x-2">
-                <svg class="w-5 h-5 text-[#0288d1]" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
-                <span>Welcome back, {{ currentUser()?.name?.split(' ') }}!</span>
-              </span>
+            <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-xl border border-[#0288d1]/20 rounded-full shadow-lg">
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span class="text-sm font-semibold text-gray-700">Welcome back, {{ currentUser()?.name?.split(' ') }}!</span>
             </div>
           } @else {
-            <div class="inline-block px-6 py-3 bg-linear-to-r from-white/80 to-[#e3f5fe] backdrop-blur-2xl border border-[#0288d1]/40 rounded-full">
-              <span class="text-sm font-semibold text-black flex items-center justify-center space-x-2">
-                <svg class="w-5 h-5 text-[#0288d1] animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
-                </svg>
-                <span class="bg-linear-to-r from-[#0277bd] to-[#0288d1] bg-clip-text text-transparent font-bold">Lightning Fast • Real-Time</span>
-              </span>
+            <div class="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/80 backdrop-blur-xl border border-[#0288d1]/20 rounded-full shadow-lg">
+              <svg class="w-4 h-4 text-[#0288d1]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+              </svg>
+              <span class="text-sm font-bold bg-linear-to-r from-[#0277bd] to-[#03a9f4] bg-clip-text text-transparent">Lightning Fast • Real-Time</span>
             </div>
           }
 
-          <h2 class="text-5xl lg:text-7xl font-bold leading-tight">
-            @if (isAuthenticated()) {
-              <span class="text-black">
-                Ready to Create
-              </span>
-              <br />
-              <span class="bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] bg-clip-text text-transparent animate-gradient">
-                Your Next Poll?
-              </span>
-            } @else {
-              <span class="text-black">
-                Poll & Chat
-              </span>
-              <br />
-              <span class="bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] bg-clip-text text-transparent animate-gradient">
-                In Real-Time
-              </span>
-            }
-          </h2>
+          <div class="space-y-4">
+            <h2 class="text-5xl lg:text-7xl font-black leading-[1.1]">
+              @if (isAuthenticated()) {
+                <span class="text-gray-900">
+                  Ready to Create
+                </span>
+                <br />
+                <span class="bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] bg-clip-text text-transparent">
+                  Your Next Poll?
+                </span>
+              } @else {
+                <span class="text-gray-900">
+                  Poll & Chat
+                </span>
+                <br />
+                <span class="bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] bg-clip-text text-transparent">
+                  In Real-Time
+                </span>
+              }
+            </h2>
 
-          <p class="text-lg lg:text-xl text-gray-700 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-            @if (isAuthenticated()) {
-              Start creating engaging polls and connect with your audience in real-time. Your dashboard awaits!
-            } @else {
-              Create instant polls, gather opinions, and chat with your audience simultaneously. All in one <span class="text-[#0288d1] font-semibold">beautiful interface</span>.
-            }
-          </p>
+            <p class="text-lg lg:text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+              @if (isAuthenticated()) {
+                Start creating engaging polls and connect with your audience in real-time. Your dashboard awaits!
+              } @else {
+                Create instant polls, gather opinions, and chat with your audience simultaneously. All in one <span class="text-[#0288d1] font-bold">beautiful interface</span>.
+              }
+            </p>
+          </div>
 
           <!-- CTA Buttons -->
-          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
             @if (isAuthenticated()) {
               <button 
                 (click)="navigateToDiscover()"
-                class="group px-10 py-5 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full text-white font-bold text-lg border border-[#0288d1]/30 hover:from-[#0277bd] hover:to-[#0288d1] transform hover:-translate-y-1 hover:scale-105 transition-all duration-300">
-                <span class="flex items-center justify-center space-x-2">
+                class="group relative overflow-hidden px-10 py-5 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-2xl text-white font-bold text-lg shadow-xl shadow-[#0288d1]/30 hover:shadow-2xl hover:shadow-[#0288d1]/40 transform hover:-translate-y-1 transition-all duration-300">
+                <div class="absolute inset-0 bg-linear-to-r from-[#0277bd] to-[#0288d1] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span class="relative flex items-center justify-center gap-2">
                   <svg class="w-6 h-6 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                   </svg>
@@ -173,159 +188,210 @@
 
               <button 
                 (click)="navigateToDashboard()"
-                class="px-10 py-5 bg-white backdrop-blur-2xl border-2 border-[#0288d1]/40 rounded-full text-black font-bold text-lg hover:bg-[#f5faff] hover:border-[#0288d1]/60 transition-all duration-300">
+                class="px-10 py-5 bg-white backdrop-blur-xl border-2 border-[#0288d1]/30 rounded-2xl text-gray-900 font-bold text-lg hover:bg-[#f5faff] hover:border-[#0288d1]/50 hover:shadow-lg transition-all duration-300">
                 Go to Dashboard
               </button>
             } @else {
-              <button 
-                (click)="handleGoogleLogin()"
-                [disabled]="loading()"
-                class="group px-10 py-5 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full text-white font-bold text-lg border border-[#0288d1]/30 hover:from-[#0277bd] hover:to-[#0288d1] transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                <span class="flex items-center justify-center space-x-2">
-                  @if (loading()) {
-                    <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Signing in...</span>
-                  } @else {
-                    <svg class="w-6 h-6" viewBox="0 0 24 24">
-                      <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                      <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                      <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                      <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    <span>Get Started with Google</span>
-                  }
-                </span>
-              </button>
+            <button 
+              (click)="handleGoogleLogin()"
+              [disabled]="loading()"
+              class="group relative overflow-hidden px-10 py-5 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-2xl text-white font-bold text-lg shadow-xl shadow-[#0288d1]/30 hover:shadow-2xl hover:shadow-[#0288d1]/40 transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              <div class="absolute inset-0 bg-linear-to-r from-[#0277bd] to-[#0288d1] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <span class="relative flex items-center justify-center gap-2.5">
+                @if (loading()) {
+                  <svg class="animate-spin h-6 w-6" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Signing in...</span>
+                } @else {
+                  <!-- Corrected Multi-Color Google Icon -->
+                  <svg class="w-6 h-6" viewBox="0 0 24 24">
+                    <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  <span>Get Started with Google</span>
+                }
+              </span>
+            </button>
+
+
 
               <button 
                 (click)="scrollToFeatures()"
-                class="px-10 py-5 bg-white backdrop-blur-2xl border-2 border-[#0288d1]/40 rounded-full text-black font-bold text-lg hover:bg-[#f5faff] hover:border-[#0288d1]/60 transition-all duration-300">
+                class="px-10 py-5 bg-white backdrop-blur-xl border-2 border-[#0288d1]/30 rounded-2xl text-gray-900 font-bold text-lg hover:bg-[#f5faff] hover:border-[#0288d1]/50 hover:shadow-lg transition-all duration-300">
                 Learn More
               </button>
             }
           </div>
 
-          <!-- Stats -->
-          <div class="flex flex-wrap gap-8 justify-center lg:justify-start pt-8">
+          <!-- Enhanced Stats -->
+          <div class="grid grid-cols-3 gap-6 pt-8">
             @if (isAuthenticated()) {
-              <div class="text-center lg:text-left">
-                <div class="text-4xl font-bold bg-linear-to-r from-[#0288d1] to-[#0277bd] bg-clip-text text-transparent">0</div>
-                <div class="text-sm text-gray-600 font-medium">Your Polls</div>
+              <div class="relative group">
+                <div class="absolute inset-0 bg-linear-to-br from-[#0288d1]/10 to-transparent rounded-2xl blur group-hover:blur-lg transition-all"></div>
+                <div class="relative bg-white/60 backdrop-blur-xl border border-white/60 rounded-2xl p-4 text-center hover:border-[#0288d1]/30 transition-all">
+                  <div class="text-3xl lg:text-4xl font-black bg-linear-to-r from-[#0288d1] to-[#0277bd] bg-clip-text text-transparent">0</div>
+                  <div class="text-xs lg:text-sm text-gray-600 font-semibold mt-1">Your Polls</div>
+                </div>
               </div>
-              <div class="text-center lg:text-left">
-                <div class="text-4xl font-bold bg-linear-to-r from-[#0288d1] to-[#0277bd] bg-clip-text text-transparent">0</div>
-                <div class="text-sm text-gray-600 font-medium">Total Votes</div>
+              <div class="relative group">
+                <div class="absolute inset-0 bg-linear-to-br from-[#03a9f4]/10 to-transparent rounded-2xl blur group-hover:blur-lg transition-all"></div>
+                <div class="relative bg-white/60 backdrop-blur-xl border border-white/60 rounded-2xl p-4 text-center hover:border-[#0288d1]/30 transition-all">
+                  <div class="text-3xl lg:text-4xl font-black bg-linear-to-r from-[#0288d1] to-[#0277bd] bg-clip-text text-transparent">0</div>
+                  <div class="text-xs lg:text-sm text-gray-600 font-semibold mt-1">Total Votes</div>
+                </div>
               </div>
-              <div class="text-center lg:text-left">
-                <div class="text-4xl font-bold text-green-500 animate-pulse">Online</div>
-                <div class="text-sm text-gray-600 font-medium">Status</div>
+              <div class="relative group">
+                <div class="absolute inset-0 bg-linear-to-br from-green-500/10 to-transparent rounded-2xl blur group-hover:blur-lg transition-all"></div>
+                <div class="relative bg-white/60 backdrop-blur-xl border border-white/60 rounded-2xl p-4 text-center hover:border-green-500/30 transition-all">
+                  <div class="flex items-center justify-center gap-1.5">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div class="text-2xl lg:text-3xl font-black text-green-500">Live</div>
+                  </div>
+                  <div class="text-xs lg:text-sm text-gray-600 font-semibold mt-1">Status</div>
+                </div>
               </div>
             } @else {
-              <div class="text-center lg:text-left group cursor-pointer">
-                <div class="text-4xl font-bold text-[#0288d1] group-hover:scale-110 transition-transform">Real-Time</div>
-                <div class="text-sm text-gray-600 font-medium">Instant Updates</div>
+              <div class="relative group cursor-pointer">
+                <div class="absolute inset-0 bg-linear-to-br from-[#0288d1]/10 to-transparent rounded-2xl blur group-hover:blur-lg transition-all"></div>
+                <div class="relative bg-white/60 backdrop-blur-xl border border-white/60 rounded-2xl p-4 text-center hover:border-[#0288d1]/30 transition-all group-hover:scale-105 transform duration-300">
+                  <div class="text-2xl lg:text-3xl font-black text-[#0288d1]">Fast</div>
+                  <div class="text-xs lg:text-sm text-gray-600 font-semibold mt-1">Lightning Speed</div>
+                </div>
               </div>
-              <div class="text-center lg:text-left group cursor-pointer">
-                <div class="text-4xl font-bold text-[#0288d1] group-hover:scale-110 transition-transform">Secure</div>
-                <div class="text-sm text-gray-600 font-medium">Google Auth</div>
+              <div class="relative group cursor-pointer">
+                <div class="absolute inset-0 bg-linear-to-br from-[#03a9f4]/10 to-transparent rounded-2xl blur group-hover:blur-lg transition-all"></div>
+                <div class="relative bg-white/60 backdrop-blur-xl border border-white/60 rounded-2xl p-4 text-center hover:border-[#0288d1]/30 transition-all group-hover:scale-105 transform duration-300">
+                  <div class="text-2xl lg:text-3xl font-black text-[#0288d1]">Secure</div>
+                  <div class="text-xs lg:text-sm text-gray-600 font-semibold mt-1">Google Auth</div>
+                </div>
               </div>
-              <div class="text-center lg:text-left group cursor-pointer">
-                <div class="text-4xl font-bold text-[#0288d1] group-hover:scale-110 transition-transform">Fast</div>
-                <div class="text-sm text-gray-600 font-medium">Blazing Speed</div>
+              <div class="relative group cursor-pointer">
+                <div class="absolute inset-0 bg-linear-to-br from-[#0277bd]/10 to-transparent rounded-2xl blur group-hover:blur-lg transition-all"></div>
+                <div class="relative bg-white/60 backdrop-blur-xl border border-white/60 rounded-2xl p-4 text-center hover:border-[#0288d1]/30 transition-all group-hover:scale-105 transform duration-300">
+                  <div class="text-2xl lg:text-3xl font-black text-[#0288d1]">Live</div>
+                  <div class="text-xs lg:text-sm text-gray-600 font-semibold mt-1">Real-Time</div>
+                </div>
               </div>
             }
           </div>
         </div>
 
-        <!-- Right Content - Glassmorphic Card -->
+        <!-- Right Content - Enhanced Preview Cards -->
         <div class="relative">
-          <div class="relative bg-white/60 backdrop-blur-2xl border-2 border-[#0288d1]/30 rounded-3xl p-8">
+          <!-- Main Container -->
+          <div class="relative space-y-6">
             
             <!-- Poll Preview Card -->
-            <div class="bg-linear-to-br from-white/80 to-[#e3f5fe]/80 backdrop-blur-xl border border-[#0288d1]/20 rounded-2xl p-6 mb-6 hover:border-[#0288d1]/40 transition-all duration-300">
-              <h3 class="text-xl font-bold text-black mb-5 flex items-center gap-2">
-                <svg class="w-6 h-6 text-[#0288d1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>
-                What's your favorite feature?
-              </h3>
-              
-              <div class="space-y-4">
-                <div class="relative group">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700 group-hover:text-black transition-colors">Real-Time Polling</span>
-                    <span class="text-sm font-bold text-[#0288d1]">45%</span>
+            <div class="relative group">
+              <div class="absolute inset-0 bg-linear-to-br from-[#0288d1]/20 to-[#03a9f4]/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all"></div>
+              <div class="relative bg-white/70 backdrop-blur-2xl border-2 border-white/60 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-6">
+                  <div class="w-12 h-12 bg-linear-to-br from-[#0288d1] to-[#03a9f4] rounded-xl flex items-center justify-center shadow-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
                   </div>
-                  <div class="h-3 bg-white/60 border border-[#0288d1]/20 rounded-full overflow-hidden">
-                    <div class="h-full bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-500" style="width: 45%"></div>
+                  <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900">What's your favorite feature?</h3>
+                    <p class="text-sm text-gray-500 mt-0.5">234 votes • Live now</p>
                   </div>
                 </div>
+                
+                <div class="space-y-4">
+                  <div class="group/option">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-semibold text-gray-700">Real-Time Polling</span>
+                      <span class="text-sm font-bold text-[#0288d1]">45%</span>
+                    </div>
+                    <div class="relative h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div class="absolute inset-0 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-1000 ease-out" style="width: 45%"></div>
+                      <div class="absolute inset-0 bg-white/20 backdrop-blur-sm opacity-0 group-hover/option:opacity-100 transition-opacity"></div>
+                    </div>
+                  </div>
 
-                <div class="relative group">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700 group-hover:text-black transition-colors">Live Chat</span>
-                    <span class="text-sm font-bold text-[#0288d1]">30%</span>
+                  <div class="group/option">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-semibold text-gray-700">Live Chat</span>
+                      <span class="text-sm font-bold text-[#0288d1]">30%</span>
+                    </div>
+                    <div class="relative h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div class="absolute inset-0 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-1000 ease-out delay-100" style="width: 30%"></div>
+                      <div class="absolute inset-0 bg-white/20 backdrop-blur-sm opacity-0 group-hover/option:opacity-100 transition-opacity"></div>
+                    </div>
                   </div>
-                  <div class="h-3 bg-white/60 border border-[#0288d1]/20 rounded-full overflow-hidden">
-                    <div class="h-full bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-500" style="width: 30%"></div>
-                  </div>
-                </div>
 
-                <div class="relative group">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700 group-hover:text-black transition-colors">Both features</span>
-                    <span class="text-sm font-bold text-[#0288d1]">25%</span>
-                  </div>
-                  <div class="h-3 bg-white/60 border border-[#0288d1]/20 rounded-full overflow-hidden">
-                    <div class="h-full bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-500" style="width: 25%"></div>
+                  <div class="group/option">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-semibold text-gray-700">Both features</span>
+                      <span class="text-sm font-bold text-[#0288d1]">25%</span>
+                    </div>
+                    <div class="relative h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div class="absolute inset-0 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-1000 ease-out delay-200" style="width: 25%"></div>
+                      <div class="absolute inset-0 bg-white/20 backdrop-blur-sm opacity-0 group-hover/option:opacity-100 transition-opacity"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Chat Preview Card -->
-            <div class="bg-linear-to-br from-white/80 to-[#e3f5fe]/80 backdrop-blur-xl border border-[#0288d1]/20 rounded-2xl p-6 hover:border-[#0288d1]/40 transition-all duration-300">
-              <div class="flex items-center space-x-2 mb-5">
-                <div class="w-3 h-3 bg-[#0288d1] rounded-full animate-pulse"></div>
-                <span class="text-sm font-semibold text-black">Live Chat</span>
-                <span class="text-xs text-gray-500">• 3 online</span>
-              </div>
-
-              <div class="space-y-4">
-                <div class="flex items-start space-x-3 animate-slide-in-left">
-                  <div class="w-9 h-9 bg-linear-to-br from-[#0288d1] to-[#03a9f4] rounded-full shrink-0 border-2 border-[#0288d1]/40"></div>
-                  <div class="bg-white/90 border border-[#0288d1]/20 rounded-2xl rounded-tl-none px-4 py-3 max-w-[75%]">
-                    <p class="text-sm text-black">This is amazing! 🚀</p>
-                    <span class="text-xs text-gray-500 mt-1 block">2:45 PM</span>
+            <div class="relative group">
+              <div class="absolute inset-0 bg-linear-to-br from-[#03a9f4]/20 to-[#0277bd]/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all"></div>
+              <div class="relative bg-white/70 backdrop-blur-2xl border-2 border-white/60 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex items-center gap-2.5">
+                    <div class="relative">
+                      <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                      <div class="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                    </div>
+                    <span class="text-lg font-bold text-gray-900">Live Chat</span>
                   </div>
+                  <span class="px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-full">3 online</span>
                 </div>
 
-                <div class="flex items-start space-x-3 justify-end animate-slide-in-right">
-                  <div class="bg-linear-to-r from-[#0288d1] to-[#03a9f4] rounded-2xl rounded-tr-none px-4 py-3 max-w-[75%] text-white border border-[#0288d1]/40">
-                    <p class="text-sm font-medium">Glad you like it! 💫</p>
-                    <span class="text-xs text-white/90 mt-1 block">2:46 PM</span>
+                <div class="space-y-4">
+                  <div class="flex items-start gap-3 animate-fade-in-up">
+                    <div class="w-10 h-10 bg-linear-to-br from-[#0288d1] to-[#03a9f4] rounded-xl shrink-0 shadow-md"></div>
+                    <div class="flex-1">
+                      <div class="bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-md px-4 py-3">
+                        <p class="text-sm font-medium text-gray-900">This is amazing! 🚀</p>
+                      </div>
+                      <span class="text-xs text-gray-400 mt-1.5 block ml-1">2:45 PM</span>
+                    </div>
                   </div>
-                  <div class="w-9 h-9 bg-gray-300 rounded-full shrink-0 border-2 border-gray-400"></div>
-                </div>
 
-                <div class="flex items-center space-x-2 text-gray-500 text-xs ml-12">
-                  <div class="flex space-x-1">
-                    <div class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce delay-100"></div>
-                    <div class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce delay-200"></div>
+                  <div class="flex items-start gap-3 justify-end animate-fade-in-up animation-delay-200">
+                    <div class="flex-1 flex justify-end">
+                      <div>
+                        <div class="bg-linear-to-r from-[#0288d1] to-[#03a9f4] rounded-2xl rounded-tr-md px-4 py-3 text-white shadow-lg">
+                          <p class="text-sm font-medium">Glad you like it! 💫</p>
+                        </div>
+                        <span class="text-xs text-gray-400 mt-1.5 block mr-1 text-right">2:46 PM</span>
+                      </div>
+                    </div>
+                    <div class="w-10 h-10 bg-gray-200 rounded-xl shrink-0 shadow-md"></div>
                   </div>
-                  <span>Someone is typing...</span>
+
+                  <div class="flex items-center gap-2 text-gray-400 text-xs ml-13">
+                    <div class="flex gap-1">
+                      <div class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce"></div>
+                      <div class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce animation-delay-100"></div>
+                      <div class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce animation-delay-200"></div>
+                    </div>
+                    <span class="font-medium">Someone is typing...</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Floating Elements -->
-          <div class="absolute -top-6 -right-6 w-24 h-24 bg-linear-to-br from-[#e1f5fe]/30 to-transparent rounded-full blur-xl animate-pulse"></div>
-          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-linear-to-br from-[#e1f5fe]/30 to-transparent rounded-full blur-xl animate-pulse delay-1000"></div>
+          <!-- Floating Decoration -->
+          <div class="absolute -top-8 -right-8 w-32 h-32 bg-linear-to-br from-[#e1f5fe]/40 to-transparent rounded-full blur-2xl animate-pulse pointer-events-none"></div>
+          <div class="absolute -bottom-8 -left-8 w-40 h-40 bg-linear-to-br from-[#e1f5fe]/40 to-transparent rounded-full blur-2xl animate-pulse animation-delay-1000 pointer-events-none"></div>
         </div>
 
       </div>
@@ -333,66 +399,81 @@
   </section>
 
   @if (!isAuthenticated()) {
-    <!-- CTA Section -->
-    <section class="relative z-10 px-6 py-12 lg:py-20">
-      <div class="max-w-5xl mx-auto">
-        <div class="relative bg-linear-to-br from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-3xl p-12 lg:p-16 border border-[#0288d1]/30 overflow-hidden">
-          <!-- Decorative Elements -->
-          <div class="absolute inset-0 opacity-20">
-            <div class="absolute top-0 left-0 w-48 h-48 border-4 border-white rounded-full"></div>
-            <div class="absolute bottom-0 right-0 w-64 h-64 border-4 border-white rounded-full"></div>
-            <div class="absolute top-1/2 left-1/3 w-32 h-32 bg-white rounded-full blur-3xl"></div>
-          </div>
-
-          <div class="relative z-10 text-center space-y-8">
-            <div class="inline-block px-6 py-3 bg-white/60 backdrop-blur-xl border border-white/50 rounded-full mb-4">
-              <span class="text-sm font-bold text-black flex items-center gap-2">
-                <svg class="w-5 h-5 text-[#0277bd]" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
-                Join Thousands of Users
-              </span>
-            </div>
-
-            <h3 class="text-4xl lg:text-6xl font-bold text-white">
-              Ready to Get Started?
-            </h3>
-            <p class="text-lg lg:text-2xl text-white/95 max-w-2xl mx-auto font-medium">
-              Create engaging polls and conversations in real-time with our beautiful, modern interface
-            </p>
-            
-            <button 
-              (click)="handleGoogleLogin()"
-              [disabled]="loading()"
-              class="inline-flex items-center space-x-2 md:space-x-3 px-6 py-3 md:px-12 md:py-6 bg-white/90 backdrop-blur-xl border-2 border-white/50 rounded-full text-black font-bold text-base md:text-xl hover:bg-white hover:shadow-lg hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-              <svg class="w-5 h-5 md:w-7 md:h-7" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-              </svg>
-              <span class="text-xs md:text-xl">Start with Google - It's Free</span>
-            </button>
-
-            <!-- Trust Indicators -->
-            <div class="flex items-center justify-center gap-8 pt-8 flex-wrap">
-              <div class="flex items-center gap-2 text-white/95">
-                <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
-                <span class="text-sm font-semibold">No Credit Card Required</span>
+    <!-- Enhanced CTA Section -->
+    <section class="relative z-10 px-6 py-16 lg:py-20">
+      <div class="max-w-6xl mx-auto">
+        <div class="relative group">
+          <!-- Glow Effect -->
+          <div class="absolute inset-0 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-[2.5rem] blur-2xl opacity-30 group-hover:opacity-40 transition-opacity"></div>
+          
+          <!-- Main Card -->
+          <div class="relative bg-linear-to-br from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-[2.5rem] p-1 shadow-2xl">
+            <div class="bg-white/10 backdrop-blur-xl rounded-[2.4rem] p-12 lg:p-16 border border-white/20">
+              
+              <!-- Decorative Pattern -->
+              <div class="absolute inset-0 opacity-10 pointer-events-none">
+                <div class="absolute top-0 left-0 w-64 h-64 border-2 border-white rounded-full"></div>
+                <div class="absolute bottom-0 right-0 w-80 h-80 border-2 border-white rounded-full"></div>
+                <div class="absolute top-1/2 left-1/3 w-48 h-48 bg-white rounded-full blur-3xl"></div>
               </div>
-              <div class="flex items-center gap-2 text-white/95">
-                <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
-                <span class="text-sm font-semibold">Setup in 30 Seconds</span>
-              </div>
-              <div class="flex items-center gap-2 text-white/95">
-                <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
-                <span class="text-sm font-semibold">Cancel Anytime</span>
+
+              <div class="relative z-10 text-center space-y-8">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-xl border border-white/30 rounded-full">
+                  <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="text-sm font-bold text-white">Join Thousands of Users</span>
+                </div>
+
+                <!-- Heading -->
+                <h3 class="text-4xl lg:text-6xl font-black text-white leading-tight">
+                  Ready to Get Started?
+                </h3>
+                
+                <!-- Description -->
+                <p class="text-lg lg:text-2xl text-white/95 max-w-3xl mx-auto font-semibold leading-relaxed">
+                  Create engaging polls and conversations in real-time with our beautiful, modern interface
+                </p>
+                
+                <!-- CTA Button -->
+                <button 
+                  (click)="handleGoogleLogin()"
+                  [disabled]="loading()"
+                  class="group/btn inline-flex items-center gap-3 px-10 py-5 bg-white rounded-2xl text-gray-900 font-bold text-xl hover:bg-gray-50 hover:shadow-2xl hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <svg class="w-7 h-7" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  <span>Start with Google - It's Free</span>
+                  <svg class="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                  </svg>
+                </button>
+
+                <!-- Trust Indicators -->
+                <div class="flex items-center justify-center gap-8 pt-6 flex-wrap">
+                  <div class="flex items-center gap-2 text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-sm font-semibold">No Credit Card</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-sm font-semibold">30 Second Setup</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-white">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-sm font-semibold">Cancel Anytime</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -401,41 +482,51 @@
     </section>
   }
 
-  <!-- Footer -->
-  <footer class="relative z-10 px-6 py-10 border-t border-[#0288d1]/20 bg-white/40 backdrop-blur-xl mt-12">
+  <!-- Enhanced Footer -->
+  <footer class="relative z-10 px-6 py-12 mt-16">
     <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-linear-to-br from-[#0288d1] to-[#0277bd] rounded-xl flex items-center justify-center border border-[#0288d1]/30">
-            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
-            </svg>
+      <div class="bg-white/60 backdrop-blur-2xl border border-white/60 rounded-3xl p-8 shadow-xl">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+          <!-- Logo & Info -->
+          <div class="flex items-center gap-4">
+            <div class="relative group">
+              <div class="absolute inset-0 bg-linear-to-br from-[#0288d1] to-[#0277bd] rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+              <div class="relative w-14 h-14 bg-linear-to-br from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-2xl flex items-center justify-center shadow-lg">
+                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <span class="font-black text-2xl bg-linear-to-r from-[#0288d1] to-[#0277bd] bg-clip-text text-transparent">PingPoll</span>
+              <p class="text-sm text-gray-600 font-medium">Real-time polling platform</p>
+            </div>
           </div>
-          <div>
-            <span class="font-bold text-xl bg-linear-to-r from-[#0288d1] to-[#0277bd] bg-clip-text text-transparent">PingPoll</span>
-            <p class="text-xs text-gray-600">Real-time polling platform</p>
-          </div>
-        </div>
-        
-        <p class="text-sm text-gray-600">
-          © 2025 PingPoll. Built with <span class="text-[#0288d1]">Angular 19</span> & <span class="text-[#0288d1]">Socket.IO</span>
-        </p>
+          
+          <!-- Copyright -->
+          <p class="text-sm text-gray-600 font-medium">
+            © 2025 PingPoll. Built with <span class="text-[#0288d1] font-bold">Angular 19</span> & <span class="text-[#0288d1] font-bold">Socket.IO</span>
+          </p>
 
-        <div class="flex items-center space-x-5">
-          <a href="https://github.com/hdaamzz" target="_blank" class="group relative">
-            <div class="w-10 h-10 bg-white/60 backdrop-blur-xl border border-[#0288d1]/30 rounded-xl flex items-center justify-center hover:bg-[#e3f5fe] hover:border-[#0288d1]/60 transition-all duration-300">
-              <svg class="w-5 h-5 text-gray-700 group-hover:text-[#0288d1] transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-            </div>
-          </a>
-          <a href="https://www.linkedin.com/in/dilshhh/" target="_blank" class="group relative">
-            <div class="w-10 h-10 bg-white/60 backdrop-blur-xl border border-[#0288d1]/30 rounded-xl flex items-center justify-center hover:bg-[#e3f5fe] hover:border-[#0288d1]/60 transition-all duration-300">
-              <svg class="w-5 h-5 text-gray-700 group-hover:text-[#0288d1] transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-              </svg>
-            </div>
-          </a>
+          <!-- Social Links -->
+          <div class="flex items-center gap-4">
+            <a href="https://github.com/hdaamzz" target="_blank" class="group relative">
+              <div class="absolute inset-0 bg-linear-to-br from-[#0288d1]/20 to-transparent rounded-xl blur group-hover:blur-lg transition-all"></div>
+              <div class="relative w-12 h-12 bg-white border border-[#0288d1]/20 rounded-xl flex items-center justify-center hover:bg-[#e3f5fe] hover:border-[#0288d1]/40 hover:shadow-lg transition-all">
+                <svg class="w-6 h-6 text-gray-700 group-hover:text-[#0288d1] transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/dilshhh/" target="_blank" class="group relative">
+              <div class="absolute inset-0 bg-linear-to-br from-[#0288d1]/20 to-transparent rounded-xl blur group-hover:blur-lg transition-all"></div>
+              <div class="relative w-12 h-12 bg-white border border-[#0288d1]/20 rounded-xl flex items-center justify-center hover:bg-[#e3f5fe] hover:border-[#0288d1]/40 hover:shadow-lg transition-all">
+                <svg class="w-6 h-6 text-gray-700 group-hover:text-[#0288d1] transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
     </div>

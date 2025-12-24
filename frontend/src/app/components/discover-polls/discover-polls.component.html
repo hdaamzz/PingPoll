@@ -1,268 +1,320 @@
-<div class="min-h-screen bg-linear-to-r from-[#e3f2fd] via-[#bbdefb] to-[#90caf9] relative overflow-hidden">
-  <!-- Background Decorative Elements -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <div class="absolute top-20 left-10 w-72 h-72 bg-[#e1f5fe]/20 rounded-full blur-3xl animate-pulse"></div>
-    <div class="absolute bottom-20 right-10 w-96 h-96 bg-[#e1f5fe]/25 rounded-full blur-3xl animate-pulse delay-1000"></div>
-    <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-linear-to-r from-[#e1f5fe]/30 to-[#ffffff]/10 rounded-full blur-2xl"></div>
+<div class="min-h-screen bg-linear-to-br from-[#e3f2fd] via-[#f5f9ff] to-[#e1f5fe] relative overflow-hidden">
+  
+  <!-- Enhanced Background Elements -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 left-0 w-150 h-150 bg-linear-to-br from-[#0288d1]/10 to-transparent rounded-full blur-3xl animate-float"></div>
+    <div class="absolute bottom-0 right-0 w-200 h-200 bg-linear-to-tl from-[#03a9f4]/15 to-transparent rounded-full blur-3xl animate-float-delayed"></div>
+    <div class="absolute top-1/2 left-1/4 w-100 h-100 bg-linear-to-r from-[#0277bd]/8 to-transparent rounded-full blur-3xl animate-pulse"></div>
   </div>
 
-  <!-- Grid Pattern Overlay -->
-  <div class="absolute inset-0 bg-[linear-gradient(rgba(225,245,254,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(225,245,254,0.08)_1px,transparent_1px)] bg-size-[64px_64px] pointer-events-none"></div>
+  <!-- Animated Grid -->
+  <div class="fixed inset-0 bg-[linear-gradient(rgba(2,136,209,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(2,136,209,0.03)_1px,transparent_1px)] bg-size-[80px_80px] pointer-events-none"></div>
+
+  <!-- Top Navigation Bar -->
+  <nav class="relative z-50 px-6 py-5 lg:px-12">
+    <div class="max-w-7xl mx-auto">
+      <div class="bg-white/70 backdrop-blur-2xl border border-white/60 rounded-2xl px-6 py-4 shadow-lg shadow-[#0288d1]/5">
+        <div class="flex items-center justify-between">
+          <!-- Logo & Title -->
+          <div class="flex items-center gap-3">
+            <div class="relative group">
+              <div class="absolute inset-0 bg-linear-to-br from-[#0288d1] to-[#0277bd] rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+              <div class="relative w-12 h-12 bg-linear-to-br from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-2xl flex items-center justify-center shadow-lg">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h1 class="text-2xl lg:text-3xl font-bold bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] bg-clip-text text-transparent">
+                Discover Polls
+              </h1>
+              <p class="text-xs text-gray-600 font-medium hidden sm:block">Join real-time conversations</p>
+            </div>
+          </div>
+
+          <!-- Stats & Actions -->
+          <div class="flex items-center gap-3">
+            <!-- Stats (Hidden on mobile) -->
+            <div class="hidden lg:flex items-center gap-5 mr-3">
+              <div class="text-center">
+                <div class="text-xl font-black bg-linear-to-r from-[#0288d1] to-[#03a9f4] bg-clip-text text-transparent">{{ getTotalPolls() }}</div>
+                <div class="text-xs text-gray-600 font-semibold">Active</div>
+              </div>
+              <div class="w-px h-8 bg-[#0288d1]/20"></div>
+              <div class="text-center">
+                <div class="text-xl font-black bg-linear-to-r from-[#0288d1] to-[#03a9f4] bg-clip-text text-transparent">{{ getTotalVotes() }}</div>
+                <div class="text-xs text-gray-600 font-semibold">Votes</div>
+              </div>
+            </div>
+
+            <!-- Home Button -->
+            <button 
+              (click)="navigateToHome()"
+              class="p-3 rounded-xl bg-white/90 backdrop-blur-xl border border-[#0288d1]/20 hover:bg-white hover:border-[#0288d1]/40 hover:shadow-lg transition-all group"
+              title="Home">
+              <svg class="w-5 h-5 text-[#0288d1] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 
   <!-- Loading State -->
   @if (isLoading()) {
-    <div class="flex items-center justify-center min-h-screen">
+    <div class="flex items-center justify-center py-20">
       <div class="text-center space-y-4">
-        <div class="w-16 h-16 border-4 border-[#0288d1] border-t-transparent rounded-full animate-spin mx-auto"></div>
-        <p class="text-lg font-semibold text-gray-800">Loading active polls...</p>
+        <div class="relative">
+          <div class="w-20 h-20 border-4 border-[#e1f5fe] border-t-[#0288d1] rounded-full animate-spin mx-auto"></div>
+          <div class="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-[#03a9f4] rounded-full animate-spin mx-auto" style="animation-duration: 1.5s; animation-direction: reverse;"></div>
+        </div>
+        <p class="text-lg font-bold bg-linear-to-r from-[#0288d1] to-[#03a9f4] bg-clip-text text-transparent">Loading active polls...</p>
       </div>
     </div>
   }
 
   <!-- Error State -->
   @if (errorMessage() && !isLoading()) {
-    <div class="flex items-center justify-center min-h-screen px-6">
-      <div class="max-w-md w-full bg-white/80 backdrop-blur-2xl border border-[#0288d1]/30 rounded-3xl p-8 text-center space-y-4">
-        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto border border-red-200">
-          <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-        </div>
-        <h3 class="text-xl font-bold text-gray-900">{{ errorMessage() }}</h3>
-        <div class="flex gap-3 justify-center">
-          <button (click)="refreshPolls()" class="px-6 py-3 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] text-white rounded-xl font-semibold hover:from-[#0277bd] hover:to-[#0288d1] transition-all">
-            Retry
-          </button>
-          <button (click)="navigateToDashboard()" class="px-6 py-3 bg-white/60 backdrop-blur-xl border border-[#0288d1]/30 text-gray-900 rounded-xl font-semibold hover:bg-white hover:border-[#0288d1]/50 transition-all">
-            Go to Dashboard
-          </button>
+    <div class="flex items-center justify-center min-h-[60vh] px-6">
+      <div class="relative group">
+        <div class="absolute inset-0 bg-linear-to-br from-red-500/10 to-transparent rounded-3xl blur-xl transition-all"></div>
+        <div class="relative max-w-md w-full bg-white/70 backdrop-blur-2xl border-2 border-red-200 rounded-3xl p-8 text-center space-y-5">
+          <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto border-2 border-red-200">
+            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-black text-gray-900">{{ errorMessage() }}</h3>
+          <div class="flex gap-3 justify-center">
+            <button 
+              (click)="refreshPolls()" 
+              class="px-6 py-3 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] text-white rounded-xl font-bold hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
+              Retry
+            </button>
+            <button 
+              (click)="navigateToDashboard()" 
+              class="px-6 py-3 bg-white/80 backdrop-blur-xl border-2 border-gray-200 text-gray-900 rounded-xl font-bold hover:bg-white hover:border-gray-300 hover:shadow-md transition-all">
+              Dashboard
+            </button>
+          </div>
         </div>
       </div>
     </div>
   }
 
   @if (!isLoading() && !errorMessage()) {
-    <!-- Content -->
-    <main class="relative z-10 px-6 py-8 lg:px-12 lg:py-10">
-      <div class="max-w-7xl mx-auto space-y-10">
+    <!-- Main Content -->
+    <main class="relative z-10 px-6 lg:px-12 py-8">
+      <div class="max-w-7xl mx-auto space-y-6">
 
-        <!-- Simplified Header with Home Button -->
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-4">
-            <button (click)="navigateToHome()" class="group p-3 bg-white/60 backdrop-blur-2xl border border-[#0288d1]/30 rounded-xl hover:bg-white hover:border-[#0288d1]/50 transition-all duration-300">
-              <svg class="w-6 h-6 text-[#0288d1] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-              </svg>
-            </button>
+        <!-- Trending Polls Section -->
+        <div class="relative group">
+          <div class="absolute inset-0 bg-linear-to-br from-[#0288d1]/5 to-transparent rounded-3xl blur-xl transition-all"></div>
+          <div class="relative bg-white/70 backdrop-blur-2xl border-2 border-white/60 rounded-3xl p-6 shadow-xl">
             
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-2xl flex items-center justify-center border border-[#0288d1]/30">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-              </div>
-              <div>
-                <h2 class="text-3xl lg:text-4xl font-bold bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] bg-clip-text text-transparent">
-                  Discover Live Polls
-                </h2>
-                <p class="text-sm text-gray-600 mt-1">Join real-time conversations</p>
+            <!-- Section Header -->
+            <div class="flex items-center justify-between mb-5">
+              <h3 class="text-2xl font-black text-gray-900">Trending Polls</h3>
+              <div class="flex items-center gap-2 px-4 py-2 bg-green-50 backdrop-blur-xl border-2 border-green-200 rounded-full">
+                <div class="relative">
+                  <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <div class="absolute inset-0 w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+                </div>
+                <span class="text-sm font-bold text-green-600">Live</span>
               </div>
             </div>
-          </div>
 
-          <!-- Stats -->
-          <div class="hidden lg:flex items-center gap-6">
-            <div class="text-center">
-              <div class="text-2xl font-bold text-[#0288d1]">{{ getTotalPolls() }}</div>
-              <div class="text-xs text-gray-600 font-medium">Active Polls</div>
-            </div>
-            <div class="w-px h-10 bg-[#0288d1]/20"></div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-[#0288d1]">{{ getTotalVotes() }}</div>
-              <div class="text-xs text-gray-600 font-medium">Total Votes</div>
-            </div>
+            @if (polls().length === 0) {
+              <div class="text-center py-16">
+                <div class="w-24 h-24 bg-linear-to-br from-[#e1f5fe] to-[#e3f5fe] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <svg class="w-12 h-12 text-[#0288d1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-black text-gray-900 mb-3">No Active Polls</h3>
+                <p class="text-gray-600 mb-8 text-lg">Create a poll in your dashboard to get started!</p>
+                <button 
+                  (click)="navigateToDashboard()" 
+                  class="inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] text-white rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                  </svg>
+                  Go to Dashboard
+                </button>
+              </div>
+            } @else {
+              <!-- Polls Carousel -->
+              <div class="relative">
+                <div class="flex gap-5 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory no-scrollbar">
+                  @for (poll of polls(); track poll.id) {
+                    <button 
+                      type="button" 
+                      (click)="selectPoll(poll.id)" 
+                      class="flex-none w-80 md:w-96 bg-white/80 backdrop-blur-xl border-2 rounded-2xl p-6 text-left snap-start group/card transition-all duration-500 ease-out hover:shadow-xl hover:bg-white"
+                      [class.border-[#0288d1]]="selectedPollId() === poll.id"
+                      [class.shadow-lg]="selectedPollId() === poll.id"
+                      [class.shadow-[#0288d1]-20]="selectedPollId() === poll.id"
+                      [class.border-white-60]="selectedPollId() !== poll.id">
+
+                      <!-- Card Header -->
+                      <div class="flex items-start justify-between gap-3 mb-4">
+                        <h4 class="text-lg font-bold text-gray-900 line-clamp-2 leading-tight flex-1 group-hover/card:text-[#0288d1] transition-colors duration-300">
+                          {{ poll.title }}
+                        </h4>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-linear-to-br from-[#e1f5fe] to-[#e3f5fe] border-2 border-[#0288d1]/30 group-hover/card:scale-105 transition-all shrink-0">
+                          <svg class="w-4 h-4 text-[#0288d1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                          <span class="text-sm font-bold text-[#0288d1]">{{ poll.totalVotes }}</span>
+                        </span>
+                      </div>
+
+                      <!-- Question -->
+                      <p class="text-sm text-gray-700 mb-5 line-clamp-2 leading-relaxed font-medium">
+                        {{ poll.question }}
+                      </p>
+
+                      <!-- Options with Progress Bars -->
+                      <div class="space-y-3">
+                        @for (option of poll.options.slice(0, 3); track option.id; let i = $index) {
+                          <div>
+                            <div class="flex items-center justify-between text-xs mb-1.5">
+                              <span class="text-gray-700 font-semibold group-hover/card:text-gray-900 transition-colors">
+                                {{ option.text }}
+                              </span>
+                              <span class="font-black text-[#0288d1]">
+                                {{ option.percentage }}%
+                              </span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                              <div class="h-full bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-700 ease-out"
+                                  [style.width.%]="option.percentage"
+                                  [style.transition-delay]="(i * 100) + 'ms'">
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+
+                      <!-- Card Footer -->
+                      <div class="mt-5 pt-4 border-t-2 border-gray-100 flex items-center justify-between">
+                        <span class="text-xs text-gray-600 font-semibold">
+                          {{ poll.options.length }} options
+                        </span>
+                        @if (selectedPollId() === poll.id) {
+                          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0288d1] animate-fade-in">
+                            <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                            </svg>
+                            Selected
+                          </span>
+                        }
+                      </div>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
           </div>
         </div>
 
-        <!-- Polls Carousel -->
-        <section class="space-y-5 max-h-[70vh] lg:max-h-[75vh] overflow-y-auto pr-2 scrollbar-thin">
-          <div class="flex items-center justify-between px-2">
-            <h3 class="text-xl font-bold text-gray-900">Trending Polls</h3>
-            <div class="flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-xl border border-[#0288d1]/30 rounded-full">
-              <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span class="text-sm font-semibold text-gray-900">Live</span>
-            </div>
-          </div>
-
-          @if (polls().length === 0) {
-            <div class="bg-white/60 backdrop-blur-2xl border border-[#0288d1]/30 rounded-3xl p-12 text-center">
-              <div class="w-20 h-20 bg-[#e1f5fe] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-[#0288d1]/30">
-                <svg class="w-10 h-10 text-[#0288d1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+        <!-- Poll Details & Chat Section -->
+        <div class="grid lg:grid-cols-[1fr_1.5fr] gap-6">
+          
+          <!-- Poll Details (LEFT) -->
+          <div class="relative group">
+            <div class="absolute inset-0 bg-linear-to-br from-[#0288d1]/5 to-transparent rounded-3xl blur-xl transition-all"></div>
+            <div class="relative bg-white/70 backdrop-blur-2xl border-2 border-white/60 rounded-3xl p-7 shadow-xl space-y-5">
+              
+              <!-- Section Header -->
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-linear-to-br from-[#0288d1] to-[#03a9f4] rounded-xl flex items-center justify-center shadow-md">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <p class="text-xs text-[#0288d1] uppercase tracking-wide font-bold">
+                  Poll Details
+                </p>
               </div>
-              <h3 class="text-xl font-bold text-gray-900 mb-2">No Active Polls</h3>
-              <p class="text-gray-600 mb-6">Create a poll in your dashboard to get started!</p>
-              <button (click)="navigateToDashboard()" class="px-6 py-3 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] text-white rounded-xl font-semibold hover:from-[#0277bd] hover:to-[#0288d1] transform hover:-translate-y-0.5 transition-all">
-                Go to Dashboard
-              </button>
-            </div>
-          } @else {
-            <div class="relative">
-              <div class="flex gap-6 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory no-scrollbar">
-                @for (poll of polls(); track poll.id) {
-                  <button type="button" (click)="selectPoll(poll.id)" 
-                    class="flex-none w-80 md:w-96 bg-white/60 backdrop-blur-2xl border-2 rounded-3xl p-7 text-left snap-start group/card transition-all duration-500 ease-out hover:bg-white"
-                    [class.border-[#0288d1]]="selectedPollId() === poll.id"
-                    [class.border-[#0288d1]-30]="selectedPollId() !== poll.id">
 
-                    <!-- Card Header -->
-                    <div class="flex items-start justify-between gap-3 mb-4">
-                      <h4 class="text-lg font-bold text-gray-900 line-clamp-2 leading-tight flex-1 group-hover/card:text-[#0288d1] transition-colors duration-300">
-                        {{ poll.title }}
-                      </h4>
-                      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#e1f5fe] backdrop-blur-sm border border-[#0288d1]/30 group-hover/card:scale-105 transition-all">
-                        <svg class="w-4 h-4 text-[#0288d1]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
-                        </svg>
-                        <span class="text-sm font-bold text-[#0288d1]">{{ poll.totalVotes }}</span>
+              <!-- Poll Info -->
+              <div>
+                <h3 class="text-xl font-black text-gray-900 mb-2 leading-tight">
+                  {{ selectedPoll().title }}
+                </h3>
+                <p class="text-sm text-gray-700 leading-relaxed font-medium">
+                  {{ selectedPoll().question }}
+                </p>
+              </div>
+
+              <!-- Stats -->
+              <div class="flex flex-wrap items-center gap-4 py-3 border-y-2 border-gray-100">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-[#0288d1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span class="text-sm font-black text-gray-900">
+                    {{ selectedPoll().totalVotes }} votes
+                  </span>
+                </div>
+                <div class="w-1 h-1 rounded-full bg-[#0288d1]"></div>
+                <div class="flex items-center gap-1.5">
+                  <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span class="text-sm text-gray-700 font-bold">Live</span>
+                </div>
+              </div>
+
+              <!-- Vote Options -->
+              <div class="space-y-3">
+                <h4 class="text-sm font-black text-gray-900 uppercase tracking-wide">Vote Distribution</h4>
+                @for (option of selectedPoll().options || []; track option.id) {
+                  <button 
+                    type="button" 
+                    (click)="voteOption(option.id)"
+                    class="w-full group cursor-pointer hover:bg-white/80 rounded-xl p-3 transition-all border-2 border-transparent hover:border-[#0288d1]/30"
+                    [disabled]="!isConnected()">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm text-gray-700 font-bold group-hover:text-gray-900 transition-colors">
+                        {{ option.text }}
+                      </span>
+                      <span class="text-base font-black text-[#0288d1]">
+                        {{ option.percentage }}% ({{ option.votes }})
                       </span>
                     </div>
-
-                    <!-- Question -->
-                    <p class="text-sm text-gray-700 mb-5 line-clamp-2 leading-relaxed">
-                      {{ poll.question }}
-                    </p>
-
-                    <!-- Options with Progress Bars -->
-                    <div class="space-y-3.5">
-                      @for (option of poll.options.slice(0, 3); track option.id; let i = $index) {
-                        <div class="group/option">
-                          <div class="flex items-center justify-between text-xs mb-1.5">
-                            <span class="text-gray-700 font-semibold group-hover/card:text-gray-900 transition-colors">
-                              {{ option.text }}
-                            </span>
-                            <span class="font-bold text-[#0288d1]">
-                              {{ option.percentage }}%
-                            </span>
-                          </div>
-                          <div class="h-2 bg-white/60 border border-[#0288d1]/20 rounded-full overflow-hidden">
-                            <div class="h-full bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-700 ease-out"
-                                [style.width.%]="option.percentage"
-                                [style.transition-delay]="(i * 100) + 'ms'">
-                            </div>
-                          </div>
-                        </div>
-                      }
-                    </div>
-
-                    <!-- Card Footer -->
-                    <div class="mt-5 pt-4 border-t border-[#0288d1]/20 flex items-center justify-between">
-                      <span class="text-xs text-gray-600 font-medium">
-                        {{ poll.options.length }} options
-                      </span>
-                      @if (selectedPollId() === poll.id) {
-                        <span class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0288d1] animate-fade-in">
-                          <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                          </svg>
-                          Selected
-                        </span>
-                      }
+                    <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-700 ease-out"
+                          [style.width.%]="option.percentage">
+                      </div>
                     </div>
                   </button>
                 }
               </div>
-            </div>
-          }
-        </section>
 
-        <!-- Swapped Layout: Poll Details LEFT, Chat RIGHT -->
-        <section class="grid lg:grid-cols-[1fr_1.3fr] gap-6 items-stretch">
-          <!-- Poll Details Section (LEFT) -->
-          <div class="bg-white/60 backdrop-blur-2xl border border-[#0288d1]/30 rounded-3xl p-7 space-y-5 order-1 lg:order-1">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-linear-to-r from-[#0288d1] to-[#03a9f4] rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+              <!-- Connection Status -->
+              <div class="flex items-center gap-2 text-xs font-bold"
+                [class.text-green-600]="isConnected()"
+                [class.text-red-600]="!isConnected()">
+                <div class="w-2 h-2 rounded-full"
+                    [class.bg-green-500]="isConnected()"
+                    [class.bg-red-500]="!isConnected()"
+                    [class.animate-pulse]="isConnected()"></div>
+                <span>{{ isConnected() ? 'Connected' : 'Disconnected' }}</span>
+                @if (activeUsersCount() > 0) {
+                  <span class="text-gray-600">• {{ activeUsersCount() }} active</span>
+                }
               </div>
-              <p class="text-xs text-[#0288d1] uppercase tracking-wide font-semibold">
-                Poll Details
-              </p>
-            </div>
 
-            <div>
-              <h3 class="text-xl font-bold text-gray-900 mb-2 leading-tight">
-                {{ selectedPoll().title }}
-              </h3>
-              <p class="text-sm text-gray-700 leading-relaxed">
-                {{ selectedPoll().question }}
-              </p>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-4 py-3 border-y border-[#0288d1]/20">
-              <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-[#0288d1]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
-                </svg>
-                <span class="text-sm font-bold text-gray-900">
-                  {{ selectedPoll().totalVotes }} votes
-                </span>
-              </div>
-              <div class="w-1 h-1 rounded-full bg-[#0288d1]"></div>
-              <div class="flex items-center gap-1.5">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span class="text-sm text-gray-700 font-medium">Live</span>
-              </div>
-            </div>
-
-            <!-- Vote Options -->
-            <div class="space-y-4">
-              <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Vote Distribution</h4>
-              @for (option of selectedPoll().options || []; track option.id) {
-                <button type="button" (click)="voteOption(option.id)"
-                  class="w-full group cursor-pointer hover:bg-gray-50 rounded-xl p-3 transition-all border border-transparent hover:border-[#0288d1]/20"
-                  [disabled]="!isConnected()">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm text-gray-700 font-semibold group-hover:text-gray-900 transition-colors">
-                      {{ option.text }}
-                    </span>
-                    <span class="text-base font-bold text-[#0288d1]">
-                      {{ option.percentage }}% ({{ option.votes }})
-                    </span>
-                  </div>
-                  <div class="h-3 bg-white/60 border border-[#0288d1]/20 rounded-full overflow-hidden">
-                    <div class="h-full bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] rounded-full transition-all duration-700 ease-out"
-                        [style.width.%]="option.percentage">
-                    </div>
-                  </div>
-                </button>
-              }
-            </div>
-
-            <!-- Connection Status -->
-            <div class="flex items-center gap-2 text-xs"
-              [class.text-green-600]="isConnected()"
-              [class.text-red-600]="!isConnected()">
-              <div class="w-2 h-2 rounded-full"
-                  [class.bg-green-500]="isConnected()"
-                  [class.bg-red-500]="!isConnected()"
-                  [class.animate-pulse]="isConnected()"></div>
-              <span class="font-medium">{{ isConnected() ? 'Connected' : 'Disconnected' }}</span>
-              @if (activeUsersCount() > 0) {
-                <span class="text-gray-600">• {{ activeUsersCount() }} active</span>
-              }
-            </div>
-
-            <!-- Info Box -->
-            <div class="pt-4 border-t border-[#0288d1]/20">
-              <div class="bg-gray-50 backdrop-blur-xl border border-[#0288d1]/20 rounded-2xl p-4">
+              <!-- Info Box -->
+              <div class="bg-linear-to-br from-[#e1f5fe] to-[#e3f5fe] backdrop-blur-xl border-2 border-[#0288d1]/30 rounded-2xl p-4">
                 <div class="flex items-start gap-3">
                   <svg class="w-5 h-5 text-[#0288d1] shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z" />
                   </svg>
-                  <p class="text-xs text-gray-700 leading-relaxed">
+                  <p class="text-xs text-gray-700 leading-relaxed font-medium">
                     Join the live chat to discuss this poll with other participants in real-time. Share your thoughts and see what others are saying!
                   </p>
                 </div>
@@ -271,120 +323,129 @@
           </div>
 
           <!-- Chat Section (RIGHT) -->
-          <div class="bg-white/60 backdrop-blur-2xl border border-[#0288d1]/30 rounded-3xl p-6 flex flex-col h-162.5 lg:h-175 order-2 lg:order-2">
-            <div class="flex items-center justify-between mb-5 pb-4 border-b border-[#0288d1]/20">
-              <div class="flex-1">
-                <p class="text-xs text-[#0288d1] uppercase tracking-wide font-semibold mb-1">
-                  Poll Discussion
-                </p>
-                <h3 class="text-lg font-bold text-gray-900 line-clamp-1">
-                  {{ selectedPoll().title }}
-                </h3>
-              </div>
-              <div class="flex items-center gap-2 px-3 py-2 bg-green-100 rounded-xl border border-green-200">
-                <div class="relative">
-                  <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <div class="absolute inset-0 w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+          <div class="relative group">
+            <div class="absolute inset-0 bg-linear-to-br from-[#0288d1]/5 to-transparent rounded-3xl blur-xl transition-all"></div>
+            <div class="relative bg-white/70 backdrop-blur-2xl border-2 border-white/60 rounded-3xl p-6 shadow-xl flex flex-col h-162.5 lg:h-175">
+              
+              <!-- Chat Header -->
+              <div class="flex items-center justify-between mb-5 pb-4 border-b-2 border-gray-100">
+                <div class="flex-1">
+                  <p class="text-xs text-[#0288d1] uppercase tracking-wide font-bold mb-1">
+                    Poll Discussion
+                  </p>
+                  <h3 class="text-lg font-black text-gray-900 line-clamp-1">
+                    {{ selectedPoll().title }}
+                  </h3>
                 </div>
-                <span class="text-xs font-bold text-green-600">Live</span>
-              </div>
-            </div>
-
-            <!-- Messages - FIXED SCROLL -->
-            <div #messagesContainer class="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-[#0288d1]/50 scrollbar-track-transparent hover:scrollbar-thumb-[#0288d1]/70" 
-                 style="scrollbar-width: thin; scrollbar-color: rgba(2,136,209,0.5) transparent;">
-              @if (pollMessages().length === 0) {
-                <div class="flex items-center justify-center h-full">
-                  <div class="text-center space-y-3">
-                    <div class="w-16 h-16 bg-[#e1f5fe] rounded-2xl flex items-center justify-center mx-auto border border-[#0288d1]/30">
-                      <svg class="w-8 h-8 text-[#0288d1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                      </svg>
-                    </div>
-                    <p class="text-sm text-gray-600">No messages yet. Start the conversation!</p>
+                <div class="flex items-center gap-2 px-3 py-2 bg-green-50 rounded-xl border-2 border-green-200">
+                  <div class="relative">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div class="absolute inset-0 w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
                   </div>
+                  <span class="text-xs font-bold text-green-600">Live</span>
                 </div>
-              } @else {
-                @for (msg of pollMessages(); track msg.id) {
-                  <div class="flex gap-3 animate-fade-in" [class.justify-end]="msg.isCurrentUser">
-                    @if (!msg.isCurrentUser) {
-                      @if (msg.userPicture) {
-                        <img [src]="msg.userPicture" [alt]="msg.userName" class="w-9 h-9 rounded-full border-2 border-[#0288d1] shrink-0 object-cover" />
-                      } @else {
-                        <div class="w-9 h-9 rounded-full bg-linear-to-r from-[#0288d1] to-[#03a9f4] shrink-0 flex items-center justify-center text-white font-bold text-sm">
-                          {{ getInitials(msg.userName) }}
-                        </div>
-                      }
-                    }
+              </div>
 
-                    <div class="max-w-[75%] space-y-1">
-                      <div class="flex items-center gap-2 text-xs" [class.justify-end]="msg.isCurrentUser">
-                        <span class="font-bold text-[#0288d1]">{{ msg.userName }}</span>
-                        <span class="text-gray-500">{{ formatTime(msg.timestamp) }}</span>
+              <!-- Messages -->
+              <div #messagesContainer 
+                   class="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-[#0288d1]/50 scrollbar-track-transparent hover:scrollbar-thumb-[#0288d1]/70" 
+                   style="scrollbar-width: thin; scrollbar-color: rgba(2,136,209,0.5) transparent;">
+                @if (pollMessages().length === 0) {
+                  <div class="flex items-center justify-center h-full">
+                    <div class="text-center space-y-3">
+                      <div class="w-16 h-16 bg-linear-to-br from-[#e1f5fe] to-[#e3f5fe] rounded-2xl flex items-center justify-center mx-auto border-2 border-[#0288d1]/30">
+                        <svg class="w-8 h-8 text-[#0288d1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
                       </div>
-
-                      <div class="px-4 py-3 rounded-2xl text-sm leading-relaxed"
-                          [class.bg-gray-100]="!msg.isCurrentUser"
-                          [class.bg-linear-to-r]="msg.isCurrentUser"
-                          [class.from-[#0288d1]]="msg.isCurrentUser"
-                          [class.via-[#03a9f4]]="msg.isCurrentUser"
-                          [class.to-[#0277bd]]="msg.isCurrentUser"
-                          [class.text-gray-800]="!msg.isCurrentUser"
-                          [class.text-white]="msg.isCurrentUser"
-                          [class.border]="!msg.isCurrentUser"
-                          [class.border-[#0288d1]-20]="!msg.isCurrentUser"
-                          [class.rounded-tl-sm]="!msg.isCurrentUser"
-                          [class.rounded-tr-sm]="msg.isCurrentUser">
-                        {{ msg.text }}
-                      </div>
+                      <p class="text-sm text-gray-600 font-semibold">No messages yet. Start the conversation!</p>
                     </div>
-
-                    @if (msg.isCurrentUser) {
-                      @if (msg.userPicture) {
-                        <img [src]="msg.userPicture" [alt]="msg.userName" class="w-9 h-9 rounded-full border-2 border-[#0288d1] shrink-0 object-cover" />
-                      } @else {
-                        <div class="w-9 h-9 rounded-full bg-gray-300 shrink-0 flex items-center justify-center text-gray-700 font-bold text-sm border-2 border-gray-400">
-                          {{ getInitials(msg.userName) }}
-                        </div>
+                  </div>
+                } @else {
+                  @for (msg of pollMessages(); track msg.id) {
+                    <div class="flex gap-3 animate-fade-in" [class.justify-end]="msg.isCurrentUser">
+                      @if (!msg.isCurrentUser) {
+                        @if (msg.userPicture) {
+                          <img [src]="msg.userPicture" [alt]="msg.userName" class="w-9 h-9 rounded-full border-2 border-[#0288d1] shrink-0 object-cover shadow-md" />
+                        } @else {
+                          <div class="w-9 h-9 rounded-full bg-linear-to-br from-[#0288d1] to-[#03a9f4] shrink-0 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                            {{ getInitials(msg.userName) }}
+                          </div>
+                        }
                       }
-                    }
+
+                      <div class="max-w-[75%] space-y-1">
+                        <div class="flex items-center gap-2 text-xs" [class.justify-end]="msg.isCurrentUser">
+                          <span class="font-bold text-[#0288d1]">{{ msg.userName }}</span>
+                          <span class="text-gray-500 font-medium">{{ formatTime(msg.timestamp) }}</span>
+                        </div>
+
+                        <div class="px-4 py-3 rounded-2xl text-sm leading-relaxed font-medium shadow-sm"
+                            [class.bg-white]="!msg.isCurrentUser"
+                            [class.bg-gradient-to-r]="msg.isCurrentUser"
+                            [class.from-[#0288d1]]="msg.isCurrentUser"
+                            [class.via-[#03a9f4]]="msg.isCurrentUser"
+                            [class.to-[#0277bd]]="msg.isCurrentUser"
+                            [class.text-gray-800]="!msg.isCurrentUser"
+                            [class.text-white]="msg.isCurrentUser"
+                            [class.border-2]="!msg.isCurrentUser"
+                            [class.border-[#0288d1]-20]="!msg.isCurrentUser"
+                            [class.rounded-tl-sm]="!msg.isCurrentUser"
+                            [class.rounded-tr-sm]="msg.isCurrentUser">
+                          {{ msg.text }}
+                        </div>
+                      </div>
+
+                      @if (msg.isCurrentUser) {
+                        @if (msg.userPicture) {
+                          <img [src]="msg.userPicture" [alt]="msg.userName" class="w-9 h-9 rounded-full border-2 border-[#0288d1] shrink-0 object-cover shadow-md" />
+                        } @else {
+                          <div class="w-9 h-9 rounded-full bg-gray-200 shrink-0 flex items-center justify-center text-gray-700 font-bold text-sm border-2 border-gray-300 shadow-sm">
+                            {{ getInitials(msg.userName) }}
+                          </div>
+                        }
+                      }
+                    </div>
+                  }
+                }
+
+                <!-- Typing Indicator -->
+                @if (typingUsersText()) {
+                  <div class="flex items-center gap-2 text-sm text-gray-600 animate-fade-in px-3">
+                    <div class="flex gap-1">
+                      <span class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                      <span class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                      <span class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                    </div>
+                    <span class="italic font-medium">{{ typingUsersText() }}</span>
                   </div>
                 }
-              }
+              </div>
 
-              <!-- Typing Indicator -->
-              @if (typingUsersText()) {
-                <div class="flex items-center gap-2 text-sm text-gray-600 animate-fade-in px-3">
-                  <div class="flex gap-1">
-                    <span class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce" style="animation-delay: 0ms"></span>
-                    <span class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce" style="animation-delay: 150ms"></span>
-                    <span class="w-2 h-2 bg-[#0288d1] rounded-full animate-bounce" style="animation-delay: 300ms"></span>
-                  </div>
-                  <span class="italic">{{ typingUsersText() }}</span>
-                </div>
-              }
+              <!-- Message Input -->
+              <form (ngSubmit)="sendMessage()" autocomplete="off" class="mt-5 pt-4 border-t-2 border-gray-100 flex items-center gap-3">
+                <input 
+                  type="text"
+                  class="flex-1 rounded-xl border-2 border-[#0288d1]/30 bg-white/80 backdrop-blur-xl px-5 py-3.5 text-sm text-gray-900 font-medium outline-none focus:ring-4 focus:ring-[#0288d1]/20 focus:border-[#0288d1] placeholder:text-gray-400 transition-all"
+                  placeholder="Type your message..."
+                  [ngModel]="newMessageText()"
+                  (ngModelChange)="newMessageText.set($event)"
+                  (input)="onMessageInput()"
+                  name="chatInput" />
+                <button 
+                  type="submit"
+                  class="inline-flex items-center justify-center rounded-xl px-6 py-3.5 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] text-white text-sm font-bold hover:shadow-xl transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 shadow-lg shadow-[#0288d1]/30"
+                  [disabled]="!newMessageText().trim() || !isConnected()">
+                  <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                  Send
+                </button>
+              </form>
             </div>
-
-            <!-- Message Input -->
-            <form (ngSubmit)="sendMessage()" autocomplete="off" class="mt-5 pt-4 border-t border-[#0288d1]/20 flex items-center gap-3">
-              <input type="text"
-                class="flex-1 rounded-2xl border-2 border-[#0288d1]/30 bg-white/60 backdrop-blur-xl px-5 py-3.5 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#0288d1] focus:border-[#0288d1] placeholder:text-gray-500 transition-all"
-                placeholder="Type your message..."
-                [ngModel]="newMessageText()"
-                (ngModelChange)="newMessageText.set($event)"
-                (input)="onMessageInput()"
-                name="chatInput" />
-              <button type="submit"
-                class="inline-flex items-center justify-center rounded-2xl px-6 py-3.5 bg-linear-to-r from-[#0288d1] via-[#03a9f4] to-[#0277bd] text-white text-sm font-bold hover:from-[#0277bd] hover:to-[#0288d1] hover:scale-105 transform transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                [disabled]="!newMessageText().trim() || !isConnected()">
-                <svg class="w-5 h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-                Send
-              </button>
-            </form>
           </div>
-        </section>
+
+        </div>
       </div>
     </main>
   }

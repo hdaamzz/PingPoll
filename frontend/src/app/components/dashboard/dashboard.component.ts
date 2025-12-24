@@ -40,6 +40,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
   isSidebarOpen = signal(false);
+  showMobileMenu = signal(false);
 
   stats = signal<DashboardStats>({
     totalPolls: 0,
@@ -93,9 +94,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
       totalVotes: totalVotes
     });
   }
+  getTimeAgo(date: Date | string): string {
+    const now = new Date();
+    const pollDate = new Date(date);
+    const diffMs = now.getTime() - pollDate.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
 
-  toggleUserMenu(): void {
-    this.showUserMenu.update(value => !value);
+    if (diffDays > 0) return `${diffDays}d ago`;
+    if (diffHours > 0) return `${diffHours}h ago`;
+    if (diffMins > 0) return `${diffMins}m ago`;
+    return 'Just now';
+  }
+  
+  navigateToDiscover() {
+    this._router.navigate(['/discover']);
+  }
+  toggleUserMenu() {
+    this.showUserMenu.update(v => !v);
+    this.showMobileMenu.set(false);
+  }
+
+  toggleMobileMenu() {
+    this.showMobileMenu.update(v => !v);
+    this.showUserMenu.set(false);
   }
 
   selectTab(tab: 'overview' | 'polls' | 'create'): void {
