@@ -10,14 +10,14 @@ export interface Toast {
   providedIn: 'root'
 })
 export class ToastService {
-private toasts = signal<Toast[]>([]);
-  public toasts$ = this.toasts.asReadonly();
+  private _toasts = signal<Toast[]>([]);
+  public toasts$ = this._toasts.asReadonly();
 
   show(message: string, type: Toast['type'] = 'info', duration: number = 3000): void {
     const id = Math.random().toString(36).substring(7);
     const toast: Toast = { id, type, message, duration };
 
-    this.toasts.update(toasts => [...toasts, toast]);
+    this._toasts.update(toasts => [...toasts, toast]);
 
     if (duration > 0) {
       setTimeout(() => {
@@ -43,10 +43,10 @@ private toasts = signal<Toast[]>([]);
   }
 
   remove(id: string): void {
-    this.toasts.update(toasts => toasts.filter(t => t.id !== id));
+    this._toasts.update(toasts => toasts.filter(t => t.id !== id));
   }
 
   clear(): void {
-    this.toasts.set([]);
+    this._toasts.set([]);
   }
 }

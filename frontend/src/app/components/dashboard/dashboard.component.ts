@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth.service';
-import { PollService, Poll, CreatePollRequest } from '../../core/services/poll/poll.service';
+import { PollService } from '../../core/services/poll/poll.service';
+import { CreatePollRequest, Poll } from '../../core/interfaces/poll.interfaces';
 
 interface DashboardStats {
   totalPolls: number;

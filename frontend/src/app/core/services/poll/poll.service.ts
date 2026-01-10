@@ -2,57 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { map, Observable } from 'rxjs';
-
-export interface PollOption {
-  id: string;
-  text: string;
-  votes: number;
-  percentage: number;
-}
-
-export interface Poll {
-  id: string;
-  title: string;
-  question: string;
-  options: PollOption[];
-  totalVotes: number;
-  status: 'active' | 'closed' | 'draft';
-  createdBy: string;
-  createdAt: Date;
-  updatedAt: Date;
-  expiresAt?: Date;
-}
-
-export interface CreatePollRequest {
-  title: string;
-  question: string;
-  options: { id: string; text: string }[];
-  expiresAt?: Date;
-}
-
-export interface UpdatePollRequest {
-  title?: string;
-  question?: string;
-  status?: 'active' | 'closed';
-  expiresAt?: Date;
-}
-
-interface ApiResponse<T> {
-  success: boolean;
-  message?: string;
-  data?: T;
-}
-
+import { ApiResponse, CreatePollRequest, Poll, UpdatePollRequest } from '../../interfaces/poll.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PollService {
-private http = inject(HttpClient);
-  private apiUrl = `${environment.api_url}/polls`;
+  private _http = inject(HttpClient);
+  private _apiUrl = `${environment.api_url}/polls`;
 
   createPoll(pollData: CreatePollRequest): Observable<Poll> {
-    return this.http.post<ApiResponse<Poll>>(this.apiUrl, pollData).pipe(
+    return this._http.post<ApiResponse<Poll>>(this._apiUrl, pollData).pipe(
       map(response => {
         if (!response.success || !response.data) {
           throw new Error(response.message || 'Failed to create poll');
@@ -63,7 +23,7 @@ private http = inject(HttpClient);
   }
 
   getUserPolls(): Observable<Poll[]> {
-    return this.http.get<ApiResponse<{ polls: Poll[] }>>(`${this.apiUrl}/my-polls`).pipe(
+    return this._http.get<ApiResponse<{ polls: Poll[] }>>(`${this._apiUrl}/my-polls`).pipe(
       map(response => {
         if (!response.success || !response.data) {
           throw new Error(response.message || 'Failed to fetch polls');
@@ -74,7 +34,7 @@ private http = inject(HttpClient);
   }
 
   getPollById(pollId: string): Observable<Poll> {
-    return this.http.get<ApiResponse<Poll>>(`${this.apiUrl}/${pollId}`).pipe(
+    return this._http.get<ApiResponse<Poll>>(`${this._apiUrl}/${pollId}`).pipe(
       map(response => {
         if (!response.success || !response.data) {
           throw new Error(response.message || 'Failed to fetch poll');
@@ -85,7 +45,7 @@ private http = inject(HttpClient);
   }
 
   updatePoll(pollId: string, pollData: UpdatePollRequest): Observable<Poll> {
-    return this.http.put<ApiResponse<Poll>>(`${this.apiUrl}/${pollId}`, pollData).pipe(
+    return this._http.put<ApiResponse<Poll>>(`${this._apiUrl}/${pollId}`, pollData).pipe(
       map(response => {
         if (!response.success || !response.data) {
           throw new Error(response.message || 'Failed to update poll');
@@ -96,7 +56,7 @@ private http = inject(HttpClient);
   }
 
   deletePoll(pollId: string): Observable<void> {
-    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${pollId}`).pipe(
+    return this._http.delete<ApiResponse<void>>(`${this._apiUrl}/${pollId}`).pipe(
       map(response => {
         if (!response.success) {
           throw new Error(response.message || 'Failed to delete poll');
@@ -106,7 +66,7 @@ private http = inject(HttpClient);
   }
 
   voteOnPoll(pollId: string, optionId: string): Observable<Poll> {
-    return this.http.post<ApiResponse<Poll>>(`${this.apiUrl}/${pollId}/vote/${optionId}`, {}).pipe(
+    return this._http.post<ApiResponse<Poll>>(`${this._apiUrl}/${pollId}/vote/${optionId}`, {}).pipe(
       map(response => {
         if (!response.success || !response.data) {
           throw new Error(response.message || 'Failed to vote');
@@ -117,7 +77,7 @@ private http = inject(HttpClient);
   }
 
   getActivePolls(): Observable<Poll[]> {
-    return this.http.get<ApiResponse<{ polls: Poll[] }>>(`${this.apiUrl}/active`).pipe(
+    return this._http.get<ApiResponse<{ polls: Poll[] }>>(`${this._apiUrl}/active`).pipe(
       map(response => {
         if (!response.success || !response.data) {
           throw new Error(response.message || 'Failed to fetch active polls');

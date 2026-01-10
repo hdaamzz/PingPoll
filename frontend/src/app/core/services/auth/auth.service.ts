@@ -18,16 +18,16 @@ import { FirebaseError } from 'firebase/app';
   providedIn: 'root'
 })
 export class AuthService {
-  private auth = inject(Auth);
-  private http = inject(HttpClient);
-  private router = inject(Router);
-  private toastService = inject(ToastService);
+  private _auth = inject(Auth);
+  private _http = inject(HttpClient);
+  private _router = inject(Router);
+  private _toastService = inject(ToastService);
 
   currentUser = signal<User | null>(null);
   loading = signal<boolean>(true); 
   isAuthenticated = signal<boolean>(false);
 
-  private readonly API_URL = environment.api_url;
+  private readonly _API_URL = environment.api_url;
 
   constructor() {
     this.initAuthStateListener();
@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   private initAuthStateListener(): void {
-    onAuthStateChanged(this.auth, (firebaseUser) => {
+    onAuthStateChanged(this._auth, (firebaseUser) => {
       if (!firebaseUser) {
         this.currentUser.set(null);
         this.isAuthenticated.set(false);
@@ -49,8 +49,8 @@ export class AuthService {
 
   checkAuthStatus(): void {
     this.loading.set(true);
-    this.http
-      .get<ApiResponse<{ user: User }>>(`${this.API_URL}/auth/me`, {
+    this._http
+      .get<ApiResponse<{ user: User }>>(`${this._API_URL}/auth/me`, {
         withCredentials: true,
       })
       .pipe(
@@ -80,7 +80,7 @@ export class AuthService {
       prompt: 'select_account',
     });
 
-    return from(signInWithPopup(this.auth, provider)).pipe(
+    return from(signInWithPopup(this._auth, provider)).pipe(
       tap(async (result) => {
         try {
           const firebaseToken = await result.user.getIdToken();
@@ -91,17 +91,17 @@ export class AuthService {
             this.isAuthenticated.set(true);
             localStorage.setItem('token', response.data.token);
 
-            this.toastService.success('Login successful! Welcome back.');
+            this._toastService.success('Login successful! Welcome back.');
             this.loading.set(false);
 
             setTimeout(() => {
-              this.router.navigate(['/']);
+              this._router.navigate(['/']);
             }, 500);
           }
         } catch (error: unknown) {
           this.loading.set(false);
           const message = error instanceof Error ? error.message : 'Authentication failed.';
-          this.toastService.error(message);
+          this._toastService.error(message);
           throw error;
         }
       }),
@@ -132,7 +132,7 @@ export class AuthService {
           errorMessage = error.message;
         }
 
-        this.toastService.error(errorMessage);
+        this._toastService.error(errorMessage);
         return throwError(() => error);
       })
     );
@@ -142,9 +142,9 @@ export class AuthService {
     firebaseToken: string
   ): Promise<AuthResponse> {
     return new Promise((resolve, reject) => {
-      this.http
+      this._http
         .post<AuthResponse>(
-          `${this.API_URL}/auth/google`,
+          `${this._API_URL}/auth/google`,
           { firebaseToken },
           { withCredentials: true }
         )
@@ -162,11 +162,11 @@ export class AuthService {
   logout(): Observable<void> {
     this.loading.set(true);
 
-    return from(signOut(this.auth)).pipe(
+    return from(signOut(this._auth)).pipe(
       tap(() => {
-        this.http
+        this._http
           .post<ApiResponse>(
-            `${this.API_URL}/auth/logout`,
+            `${this._API_URL}/auth/logout`,
             {},
             { withCredentials: true }
           )
@@ -176,22 +176,22 @@ export class AuthService {
               this.currentUser.set(null);
               this.isAuthenticated.set(false);
               this.loading.set(false);
-              this.toastService.success('Logged out successfully');
-              this.router.navigate(['/']);
+              this._toastService.success('Logged out successfully');
+              this._router.navigate(['/']);
             },
             error: () => {
               localStorage.removeItem('token');
               this.currentUser.set(null);
               this.isAuthenticated.set(false);
               this.loading.set(false);
-              this.toastService.error('Logout failed on server, but cleared locally');
-              this.router.navigate(['/']);
+              this._toastService.error('Logout failed on server, but cleared locally');
+              this._router.navigate(['/']);
             },
           });
       }),
       catchError((error) => {
         this.loading.set(false);
-        this.toastService.error('Logout failed');
+        this._toastService.error('Logout failed');
         return throwError(() => error);
       })
     );
