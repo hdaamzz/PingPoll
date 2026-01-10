@@ -1,24 +1,33 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { COOKIE_CONFIG, getCookieOptions } from '../../constants/cookie.constants';
 import { isProduction } from '../../config/env.config';
 
 export class CookieUtil {
-  static setAuthCookie(res: Response, token: string): void {
+  static setAuthCookies(res: Response, accessToken: string, refreshToken: string): void {
     res.cookie(
-      COOKIE_CONFIG.NAME,
-      token,
-      getCookieOptions(isProduction())
+      COOKIE_CONFIG.ACCESS_TOKEN_NAME,
+      accessToken,
+      getCookieOptions(isProduction(), COOKIE_CONFIG.ACCESS_TOKEN_MAX_AGE)
+    );
+
+    res.cookie(
+      COOKIE_CONFIG.REFRESH_TOKEN_NAME,
+      refreshToken,
+      getCookieOptions(isProduction(), COOKIE_CONFIG.REFRESH_TOKEN_MAX_AGE)
     );
   }
 
-  static clearAuthCookie(res: Response): void {
-    res.clearCookie(
-      COOKIE_CONFIG.NAME,
-      getCookieOptions(isProduction())
-    );
+  static clearAuthCookies(res: Response): void {
+    const cookieOptions = getCookieOptions(isProduction(), 0);
+    res.clearCookie(COOKIE_CONFIG.ACCESS_TOKEN_NAME, cookieOptions);
+    res.clearCookie(COOKIE_CONFIG.REFRESH_TOKEN_NAME, cookieOptions);
   }
 
-  static getAuthCookie(req: any): string | undefined {
-    return req.cookies[COOKIE_CONFIG.NAME];
+  static getAccessToken(req: Request): string | undefined {
+    return req.cookies[COOKIE_CONFIG.ACCESS_TOKEN_NAME];
+  }
+
+  static getRefreshToken(req: Request): string | undefined {
+    return req.cookies[COOKIE_CONFIG.REFRESH_TOKEN_NAME];
   }
 }

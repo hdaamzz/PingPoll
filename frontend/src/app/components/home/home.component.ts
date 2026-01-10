@@ -44,9 +44,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   showUserMenu = signal(false);
 
   ngOnInit(): void {
-    if (this.isAuthenticated()) {
-      console.log('User is authenticated:', this.currentUser());
-    }
   }
 
   handleGoogleLogin(): void {

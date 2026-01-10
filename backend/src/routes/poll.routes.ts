@@ -10,7 +10,7 @@ const authMiddleware = container.resolve(AuthMiddleware);
 
 router.post('/', authMiddleware.authenticate, pollController.createPoll);
 router.get('/my-polls', authMiddleware.authenticate, pollController.getUserPolls);
-router.get('/active', pollController.getActivePolls); 
+router.get('/active', authMiddleware.authenticate, pollController.getActivePolls); 
 router.get('/:pollId', pollController.getPollById); 
 router.put('/:pollId', authMiddleware.authenticate, pollController.updatePoll);
 router.delete('/:pollId', authMiddleware.authenticate, pollController.deletePoll);

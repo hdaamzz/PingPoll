@@ -19,25 +19,35 @@ export class AuthMiddleware implements IAuthMiddleware {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const token = CookieUtil.getAuthCookie(req);
+      const token = CookieUtil.getAccessToken(req);
+      const refreshToken = CookieUtil.getRefreshToken(req);
 
       if (!token) {
+        if (refreshToken) {
+          res.status(HTTP_STATUS.UNAUTHORIZED).json({
+            success: false,
+            message: 'Access token expired',
+            tokenExpired: true,
+          });
+          return;
+        }
+        
         res.status(HTTP_STATUS.UNAUTHORIZED).json({
           success: false,
           message: AUTH_MESSAGES.AUTH_REQUIRED,
+          tokenExpired: false,
         });
         return;
-      }
-
-      const decoded = JwtUtil.verifyToken(token);
-      console.log(decoded);
-      
+      }      
+      const decoded = JwtUtil.verifyAccessToken(token);
+            
       const user = await this.authService.getUserById(decoded.userId);
 
       if (!user) {
         res.status(HTTP_STATUS.UNAUTHORIZED).json({
           success: false,
           message: AUTH_MESSAGES.USER_NOT_FOUND,
+          tokenExpired: false,
         });
         return;
       }
@@ -45,12 +55,16 @@ export class AuthMiddleware implements IAuthMiddleware {
       req.userId = decoded.userId;
       req.user = user;
       next();
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Auth middleware error:', error.name, error.message);
+      
+      const isTokenExpired = error.name === 'TokenExpiredError';
+      
       res.status(HTTP_STATUS.UNAUTHORIZED).json({
         success: false,
-        message: AUTH_MESSAGES.INVALID_TOKEN,
+        message: isTokenExpired ? 'Access token expired' : AUTH_MESSAGES.INVALID_TOKEN,
+        tokenExpired: isTokenExpired,
       });
     }
   };
-
 }

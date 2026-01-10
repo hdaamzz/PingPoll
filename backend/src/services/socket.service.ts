@@ -29,7 +29,7 @@ export class SocketService {
           return next(new Error('Authentication token required'));
         }
 
-        const decoded = JwtUtil.verifyToken(token);
+        const decoded = JwtUtil.verifyAccessToken(token);
         
         if (!decoded || !decoded.userId) {
           console.error('Socket auth failed: Invalid token');
@@ -43,11 +43,17 @@ export class SocketService {
         next();
       } catch (error: any) {
         console.error('Socket auth error:', error.message);
-        next(new Error('Authentication failed: ' + error.message));
+        
+        if (error.name === 'TokenExpiredError') {
+          next(new Error('Token expired. Please refresh your connection.'));
+        } else {
+          next(new Error('Authentication failed: ' + error.message));
+        }
       }
     });
 
     this.io.on('connection', (socket: UserSocket) => {
+      console.log('User connected:', socket.userId);
 
       this.handlePollJoin(socket);
       this.handlePollLeave(socket);
@@ -145,6 +151,7 @@ export class SocketService {
         if (!text.trim()) {
           return;
         }
+        
         const savedMessage = await this.messageService.createMessage({
           pollId,
           userId: socket.userId!,
@@ -152,6 +159,7 @@ export class SocketService {
           userPicture: socket.userPicture!,
           text: text.trim()
         });
+        
         this.io.to(`poll:${pollId}`).emit('chat:message', savedMessage);
 
         this.clearTyping(pollId, socket.userId!);
@@ -197,6 +205,7 @@ export class SocketService {
 
   private handleDisconnect(socket: UserSocket): void {
     socket.on('disconnect', () => {
+      console.log('User disconnected:', socket.userId);
 
       this.pollRooms.forEach((users, pollId) => {
         if (users.has(socket.userId!)) {
@@ -225,7 +234,6 @@ export class SocketService {
         this.typingUsers.delete(pollId);
       }
     }
-
   }
 
   getIO(): Server {

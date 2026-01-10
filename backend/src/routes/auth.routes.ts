@@ -9,6 +9,7 @@ const authController = container.resolve(AuthController);
 const authMiddleware = container.resolve(AuthMiddleware);
 
 router.post('/google', authController.googleAuth);
+router.post('/refresh', authController.refreshToken);
 router.get('/me', authMiddleware.authenticate, authController.getCurrentUser);
 router.post('/logout', authMiddleware.authenticate, authController.logout);
 

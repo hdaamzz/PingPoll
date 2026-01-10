@@ -16,7 +16,8 @@ export const routes: Routes = [
   },
   { 
     path: 'discover',
-    component: DiscoverPollsComponent 
+    component: DiscoverPollsComponent ,
+    canActivate:[authGuard]
   },
   {
     path: '**',

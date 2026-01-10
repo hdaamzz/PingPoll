@@ -12,6 +12,7 @@ import { tap, catchError, throwError, Observable, from, map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ApiResponse, AuthResponse, User } from '../../models/user.model';
 import { ToastService } from '../toast/toast.service';
+import { FirebaseError } from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +24,8 @@ export class AuthService {
   private toastService = inject(ToastService);
 
   currentUser = signal<User | null>(null);
-  loading = signal<boolean>(false);
-  isAuthenticated = signal<boolean>(true);
+  loading = signal<boolean>(true); 
+  isAuthenticated = signal<boolean>(false);
 
   private readonly API_URL = environment.api_url;
 
@@ -41,7 +42,8 @@ export class AuthService {
       }
     });
   }
-  getToken(){
+
+  getToken(): string | null {
     return localStorage.getItem('token');
   }
 
@@ -58,7 +60,8 @@ export class AuthService {
             this.isAuthenticated.set(true);
           }
         }),
-        catchError(() => {
+        catchError((error) => {
+          console.log('Auth check failed:', error);
           this.currentUser.set(null);
           this.isAuthenticated.set(false);
           return throwError(() => new Error('Not authenticated'));
@@ -81,13 +84,11 @@ export class AuthService {
       tap(async (result) => {
         try {
           const firebaseToken = await result.user.getIdToken();
-
           const response = await this.authenticateWithBackend(firebaseToken);
 
           if (response.success && response.data) {
             this.currentUser.set(response.data.user);
             this.isAuthenticated.set(true);
-
             localStorage.setItem('token', response.data.token);
 
             this.toastService.success('Login successful! Welcome back.');
@@ -97,11 +98,10 @@ export class AuthService {
               this.router.navigate(['/']);
             }, 500);
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           this.loading.set(false);
-          this.toastService.error(
-            error.message || 'Authentication failed. Please try again.'
-          );
+          const message = error instanceof Error ? error.message : 'Authentication failed.';
+          this.toastService.error(message);
           throw error;
         }
       }),
@@ -114,17 +114,22 @@ export class AuthService {
           emailVerified: result.user.emailVerified,
         } as User;
       }),
-      catchError((error: any) => {
+      catchError((error: unknown) => {
         this.loading.set(false);
-
         let errorMessage = 'Login failed. Please try again.';
 
-        if (error.code === 'auth/popup-closed-by-user') {
-          errorMessage = 'Login cancelled.';
-        } else if (error.code === 'auth/popup-blocked') {
-          errorMessage = 'Popup blocked. Please allow popups for this site.';
-        } else if (error.code === 'auth/cancelled-popup-request') {
-          errorMessage = 'Login cancelled.';
+        if (error instanceof FirebaseError) {
+          switch (error.code) {
+            case 'auth/popup-closed-by-user':
+            case 'auth/cancelled-popup-request':
+              errorMessage = 'Login cancelled.';
+              break;
+            case 'auth/popup-blocked':
+              errorMessage = 'Popup blocked. Please allow popups for this site.';
+              break;
+          }
+          } else if (error instanceof Error) {
+          errorMessage = error.message;
         }
 
         this.toastService.error(errorMessage);

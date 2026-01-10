@@ -9,19 +9,29 @@ export interface JwtPayload {
 }
 
 export class JwtUtil {
-  private static readonly SECRET = ENV_CONFIG.JWT_SECRET;
-  private static readonly EXPIRES_IN = ENV_CONFIG.JWT_EXPIRES_IN;
+  private static readonly ACCESS_TOKEN_SECRET = ENV_CONFIG.JWT_SECRET;
+  private static readonly REFRESH_TOKEN_SECRET = ENV_CONFIG.REFRESH_TOKEN_SECRET || ENV_CONFIG.JWT_SECRET + '_refresh';
 
-  static generateToken(payload: { userId: string; email: string }): string {
+  static generateAccessToken(payload: { userId: string; email: string }): string {
+    const options: SignOptions = {
+      expiresIn: '15m',
+    };
+    return jwt.sign(payload, this.ACCESS_TOKEN_SECRET, options);
+  }
+
+  static generateRefreshToken(payload: { userId: string }): string {
     const options: SignOptions = {
       expiresIn: '7d',
     };
-
-    return jwt.sign(payload, this.SECRET, options);
+    return jwt.sign(payload, this.REFRESH_TOKEN_SECRET, options);
   }
 
-  static verifyToken(token: string): JwtPayload {
-    return jwt.verify(token, this.SECRET) as JwtPayload;
+  static verifyAccessToken(token: string): JwtPayload {
+    return jwt.verify(token, this.ACCESS_TOKEN_SECRET) as JwtPayload;
+  }
+
+  static verifyRefreshToken(token: string): JwtPayload {
+    return jwt.verify(token, this.REFRESH_TOKEN_SECRET) as JwtPayload;
   }
 
   static decodeToken(token: string): JwtPayload | null {

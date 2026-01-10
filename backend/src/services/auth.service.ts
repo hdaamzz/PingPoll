@@ -41,17 +41,23 @@ export class AuthService implements IAuthService {
           lastSeen: new Date(),
         } as any) as any;
       }
+      
       if(!user){
         throw new Error(`User not found in Auth service verifyFirebaseToken `);
       }
 
       const userDto = UserDto.fromModel(user);
-      const jwtToken = JwtUtil.generateToken({
+      
+      const accessToken = JwtUtil.generateAccessToken({
         userId: user._id.toString(),
         email: user.email,
       });
 
-      return new AuthResponseDto(userDto, jwtToken);
+      const refreshToken = JwtUtil.generateRefreshToken({
+        userId: user._id.toString(),
+      });
+
+      return new AuthResponseDto(userDto, accessToken, refreshToken);
     } catch (error: any) {
       throw new Error(`${AUTH_MESSAGES.FIREBASE_TOKEN_INVALID}: ${error.message}`);
     }

@@ -4,6 +4,7 @@ import { IAuthService } from '../services/interfaces/auth-service.interface';
 import { IAuthController } from './interfaces/auth-controller.interface';
 import { AuthRequest } from '../middlewares/interfaces/auth-middleware.interface';
 import { CookieUtil } from '../shared/utils/cookie.util';
+import { JwtUtil } from '../shared/utils/jwt.util';
 import { HTTP_STATUS } from '../constants/http-status.constants';
 import { AUTH_MESSAGES } from '../constants/messages.constants';
 import { GoogleAuthDto } from '../shared/dtos/auth/google-auth.dto';
@@ -31,7 +32,7 @@ export class AuthController implements IAuthController {
         googleAuthDto.firebaseToken
       );
 
-      CookieUtil.setAuthCookie(res, authResponse.token);
+      CookieUtil.setAuthCookies(res, authResponse.token, authResponse.refreshToken);
 
       res.status(HTTP_STATUS.OK).json({
         success: true,
@@ -42,6 +43,57 @@ export class AuthController implements IAuthController {
       res.status(HTTP_STATUS.UNAUTHORIZED).json({
         success: false,
         message: error.message || AUTH_MESSAGES.AUTH_FAILED,
+      });
+    }
+  };
+
+
+  refreshToken = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const refreshToken = CookieUtil.getRefreshToken(req);
+
+      if (!refreshToken) {
+        res.status(HTTP_STATUS.UNAUTHORIZED).json({
+          success: false,
+          message: 'Refresh token not found',
+        });
+        return;
+      }
+
+      const decoded = JwtUtil.verifyRefreshToken(refreshToken);
+
+      const user = await this.authService.getUserById(decoded.userId);
+
+      if (!user) {
+        res.status(HTTP_STATUS.UNAUTHORIZED).json({
+          success: false,
+          message: AUTH_MESSAGES.USER_NOT_FOUND,
+        });
+        return;
+      }
+
+      const newAccessToken = JwtUtil.generateAccessToken({
+        userId: user.id,
+        email: user.email,
+      });
+
+      const newRefreshToken = JwtUtil.generateRefreshToken({
+        userId: user.id,
+      });
+
+      CookieUtil.setAuthCookies(res, newAccessToken, newRefreshToken);
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        message: 'Token refreshed successfully',
+        data: {
+          token: newAccessToken,
+        },
+      });
+    } catch (error) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        success: false,
+        message: 'Invalid or expired refresh token',
       });
     }
   };
@@ -76,7 +128,7 @@ export class AuthController implements IAuthController {
         await this.authService.updateOnlineStatus(req.userId, false);
       }
 
-      CookieUtil.clearAuthCookie(res);
+      CookieUtil.clearAuthCookies(res);
 
       res.status(HTTP_STATUS.OK).json({
         success: true,
