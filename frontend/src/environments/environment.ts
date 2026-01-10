@@ -1,7 +1,7 @@
 export const environment ={
     production:true,
-    // api_url:'https://pingpoll.evendigo.space/api',
-    api_url:'http://localhost:3000/api',
+    api_url:'https://pingpoll.evendigo.space/api',
+    // api_url:'http://localhost:3000/api',
     firebase:{
     apiKey: "AIzaSyC4BDLEClY_DzqwZD1jKUlQqPJrLlbSsuE",
     authDomain: "pingpoll.firebaseapp.com",
