@@ -69,7 +69,7 @@ export class SocketService {
       return;
     }
 
-    this.socket = io(environment.socket_url), {
+    this.socket = io(environment.socket_url, {
       auth: {
         token,
         userName: user.name,
